@@ -1,0 +1,15 @@
+{
+"compilerOptions": {
+  "module": "NodeNext",
+  "esModuleInterop": true,
+  "target": "es2021",
+  "moduleResolution": "NodeNext",
+  "sourceMap": true,
+  "outDir": "./dist"
+},
+"include": [
+  "src/**/*"
+],
+"lib": ["es2021"]
+}
+
