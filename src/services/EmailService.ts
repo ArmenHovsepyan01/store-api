@@ -18,12 +18,13 @@ async function sendRegistrationVerificationMail(email: string){
     const html = `<h1>Click the button to verify your account.</h1>
     <a style="text-decoration: none; background: gray; color: white; padding: 6px 12px; border-radius: 4px" href="http://localhost:${process.env.PORT}/api/verify?token=${token}"
      target="_blank">Verify</a>`;
+
     const mailOptions = {
         from: process.env.MAIL,
         to: email,
         subject: 'Registration Confirmation',
         html: html
-    }
+    };
 
     try {
         return await transporter.sendMail(mailOptions);
