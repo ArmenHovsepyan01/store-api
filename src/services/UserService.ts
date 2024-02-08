@@ -6,10 +6,22 @@ import User from "../models/User";
 import sendRegistrationVerificationMail from "./EmailService";
 
 import {createUserParams, UserInterface} from "../definitions";
+import Product from "../models/Product";
 class UserService {
-    async getAllUsers(){
+    async getUser(email: string){
         try {
-            return await User.findAll();
+            const user = await User.findOne({
+                where: {
+                    email: email
+                }
+            });
+
+            const products = await Product.describe();
+            console.log(products);
+
+            if(!user) throw new Error(`There is no user by this mail ${email}`);
+
+            return user;
         } catch (e){
             throw new Error(e);
         }
@@ -17,6 +29,17 @@ class UserService {
     async createUser(body: createUserParams) {
         try {
             const { firstName, lastName, password, email} = body;
+
+            const isUserExists = await User.findOne({
+                where: {
+                    email: email
+                }
+            });
+
+            if(isUserExists && !isUserExists.dataValues.isVerified) throw new Error('You already have register with this email please verify your account or wait 5 minute to register again.');
+
+            if(isUserExists && isUserExists.dataValues.isVerified) throw new Error('You already have have an account please log in or use another mail for register.');
+
             const hashedPassword= await bcrypt.hash(password, 7);
 
             const newUser = await User.create({
@@ -33,7 +56,8 @@ class UserService {
                 info: info
             };
         } catch (e){
-            throw new Error(e.errors[0].message);
+            console.log(e);
+            throw new Error(e);
         }
     }
 
@@ -65,7 +89,7 @@ class UserService {
                 }
             });
 
-            if(!user) throw new Error("There is no user with such email.");
+            if(!user) throw new Error("There is no account with such mail please pass registration and verification.");
 
             if(!user.dataValues.isVerified) throw new Error("User isn't verified.");
 

@@ -5,15 +5,6 @@ import userServices from "../services/UserService";
 import { validationResult } from "express-validator";
 
 class UserController {
-    async getAllUsers(req: Request, res: Response) {
-        try {
-            const users = await userServices.getAllUsers();
-            res.send(users);
-        } catch (e) {
-            throw new Error(e);
-        }
-    }
-
     async createUser(req: Request, res: Response) {
         try {
             const errors = validationResult(req);
@@ -24,7 +15,9 @@ class UserController {
             await userServices.createUser(req.body);
             res.status(200).send("User registered successfully.")
         } catch (e) {
-            res.status(500).send(`Server error:: ${e}`);
+            res.status(500).json({
+                error: e.message
+            });
         }
     }
 
@@ -33,7 +26,9 @@ class UserController {
             const message = await userServices.verifyUser(req.query.token);
             res.status(300).redirect("http://localhost:3000/login");
         } catch (e) {
-            res.status(500).send(`Server Error :: ${e}`);
+            res.status(500).json({
+                error: e.message
+            });
         }
     }
 
@@ -49,16 +44,23 @@ class UserController {
 
             res.status(200).send(info);
         } catch (e) {
-            console.log(e.message);
-            res.status(400).send(e.message);
+            res.status(400).json({
+                error: e.message
+            });
         }
     }
 
     async auth(req: Request, res: Response) {
         try {
-            // const user = await
+            const { email } = req.body;
+            const user = await userServices.getUser(email);
+
+            console.log(user);
+            res.status(200).json(user);
         } catch (e) {
-            res.status(400).json(e);
+            res.status(400).json({
+                error: e.message
+            });
         }
     }
 }
