@@ -9,9 +9,11 @@ ProductImage.init({
         autoIncrement: true,
         primaryKey: true
     },
-    imageData: {
-        type: DataTypes.BLOB,
-        allowNull: false
+    imageUrl: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE"
     }
 }, {
     sequelize,

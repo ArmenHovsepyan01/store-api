@@ -34,8 +34,12 @@ Product.init({
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
+    category: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     main_image: {
-        type: DataTypes.BLOB,
+        type: DataTypes.TEXT,
     }
 }, {
     sequelize,
@@ -45,7 +49,15 @@ Product.init({
 
 Product.hasMany(ProductImage, { as: "images", foreignKey: "productId" });
 Product.hasMany(ProductColors, { as: "colors", foreignKey: "productId" });
-Product.hasMany(ProductCategories, { as: "categories", foreignKey: "productId" });
+// Product.hasMany(ProductCategories, { as: "categories", foreignKey: "productId" });
 Product.hasMany(ProductSizes, { as: "sizes", foreignKey: "productId" });
 
+// (async ()=>{
+//     await Product.sync({ force: true });
+//     await ProductImage.sync({ force: true });
+//     await ProductSizes.sync({ force: true });
+//     await ProductColors.sync({ force: true });
+// })()
 export default Product;
+
+
