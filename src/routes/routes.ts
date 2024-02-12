@@ -12,6 +12,8 @@ import { validateProductCreateBody } from "../validators/createProductValidator"
 import multer from "multer";
 
 import path from "node:path";
+import {privateDecrypt} from "node:crypto";
+import product from "../models/Product";
 
 const router = Router();
 
@@ -45,6 +47,9 @@ router.route("/products").get(productController.getAllProducts);
 
 router.route("/upload").post(upload.any(), productController.upload);
 
-router.route("/product/:id").get(productController.getProductById);
+router.route("/product/:id")
+    .get(productController.getProductById)
+    .delete(productController.deleteProductById)
+    .put(productController.updateProduct)
 
 export default router;

@@ -7,6 +7,7 @@ import ProductColors from "./ProductColors";
 import ProductCategory from "./ProductCategory";
 import ProductSizes from "./ProductSizes";
 import Categories from "./Categories";
+import User from "./User";
 
 class Product extends Model {}
 
@@ -40,6 +41,14 @@ Product.init(
     main_image: {
       type: DataTypes.TEXT,
     },
+    sizes: {
+        type: DataTypes.JSON,
+        allowNull: false
+    },
+      colors: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
   },
   {
     sequelize,
@@ -50,18 +59,6 @@ Product.init(
 
 Product.hasMany(ProductImage, {
   as: "images",
-  foreignKey: "productId",
-  onDelete: "CASCADE",
-});
-
-Product.hasMany(ProductColors, {
-  as: "colors",
-  foreignKey: "productId",
-  onDelete: "CASCADE",
-});
-
-Product.hasMany(ProductSizes, {
-  as: "sizes",
   foreignKey: "productId",
   onDelete: "CASCADE",
 });
@@ -86,8 +83,9 @@ Categories.belongsToMany(Product, {
 //   await ProductSizes.sync({ force: true });
 //   await ProductColors.sync({ force: true });
 //   await ProductCategory.sync({ force: true });
+//   await User.sync({ force: true });
 // })();
-
+//
 // (async () => {
 //   const categories = [
 //     "clothes",
@@ -99,7 +97,7 @@ Categories.belongsToMany(Product, {
 //   const insertingCategories = categories.map((item) => {
 //     return { category: item };
 //   });
-
+//
 //   await Categories.sync();
 //   await Categories.bulkCreate(insertingCategories);
 // })();

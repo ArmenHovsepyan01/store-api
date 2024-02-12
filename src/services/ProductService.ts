@@ -1,9 +1,15 @@
 import Product from "../models/Product";
 import ProductImage from "../models/ProductImage";
-import ProductColors from "../models/ProductColors";
-import ProductSizes from "../models/ProductSizes";
 import Categories from "../models/Categories";
 import ProductCategory from "../models/ProductCategory";
+
+import { IProduct } from "../definitions";
+
+import { createValuesFromReqBody } from "../helpers/createValuesFromReqBody";
+import { Op } from "sequelize"
+import * as QueryString from "querystring";
+import express from "express";
+import {createWhereClause} from "../helpers/createWhereClause";
 
 interface createProductParams {
   name: string;
@@ -11,10 +17,10 @@ interface createProductParams {
   price: string;
   brand: string;
   sizes: string;
-  colors: string;
+  color: string;
   categoryId: string;
   main_image: string;
-  images: string[];
+  images: File [];
 }
 
 class ProductService {
@@ -27,7 +33,7 @@ class ProductService {
         brand,
         main_image,
         images,
-        colors,
+        color,
         sizes,
         categoryId,
       } = body;
@@ -45,6 +51,8 @@ class ProductService {
           brand: brand,
           main_image: main_image,
           images: productImages,
+          sizes: sizes,
+          colors: color
         },
         {
           include: [
@@ -73,8 +81,6 @@ class ProductService {
       const product = await Product.findByPk(id, {
         include: [
           { model: ProductImage, as: "images" },
-          { model: ProductColors, as: "colors" },
-          { model: ProductSizes, as: "sizes" },
           { model: Categories, as: "category" },
         ],
       });
@@ -86,18 +92,47 @@ class ProductService {
     }
   }
 
-  async getAllProducts() {
+  async getAllProducts(queries: any) {
     try {
+      const { productWhereClause, categoryWhereClause } = createWhereClause(queries);
+      console.log(productWhereClause, categoryWhereClause)
       const products = await Product.findAll({
+        where: productWhereClause,
         include: [
           { model: ProductImage, as: "images" },
-          { model: ProductColors, as: "colors" },
-          { model: ProductSizes, as: "sizes" },
-          { model: Categories, as: "category" },
+          { model: Categories, as: "category", where: categoryWhereClause },
         ],
       });
 
       return products;
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+
+  async deleteProductById(id: string){
+    try {
+      return await Product.destroy({
+        where: {
+          id: id
+        }
+      });
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+
+  async updateProductById(id: string, fields: IProduct){
+    try {
+      const values = createValuesFromReqBody(fields);
+      console.log(values)
+      const data = await Product.update(values, {
+        where: {
+          id: id
+        }
+      });
+
+      console.log(data);
     } catch (e) {
       throw new Error(e);
     }

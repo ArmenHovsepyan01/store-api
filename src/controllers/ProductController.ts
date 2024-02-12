@@ -3,11 +3,16 @@ import productService from "../services/ProductService";
 import { validationResult } from "express-validator";
 import { changeToBase64 } from "../helpers/changeFromUrlToBase64";
 import { log } from "console";
+import {resolve} from "node:dns";
+import Product from "../models/Product";
+import ProductService from "../services/ProductService";
+import product from "../models/Product";
+import * as QueryString from "querystring";
 
 class ProductController {
   async createProduct(req: Request, res: Response) {
     try {
-      console.log(req.files);
+      console.log(req.files, req.body);
 
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -38,6 +43,7 @@ class ProductController {
     try {
       const { id } = req.params;
       const product = await productService.getProductById(id);
+      console.log(req.url)
 
       res.status(200).json({
         product: product,
@@ -51,8 +57,8 @@ class ProductController {
 
   async getAllProducts(req: Request, res: Response) {
     try {
-      // console.log(req.query);
-      const products = await productService.getAllProducts();
+      const queries = req.query;
+      const products = await productService.getAllProducts(queries);
       res.status(200).json({
         product: products,
       });
@@ -81,6 +87,35 @@ class ProductController {
     } catch (e) {
       res.status(400).json({
         error: e.message,
+      });
+    }
+  }
+
+  async deleteProductById(req: Request, res: Response){
+    try {
+      const { id } = req.params;
+      await ProductService.deleteProductById(id);
+      res.status(200).json({
+        message: `The product by id ${id} has successfully deleted.`
+      });
+    } catch (e) {
+      res.status(400).json({
+        error: e.message
+      });
+    }
+  }
+
+  async updateProduct(req: Request, res: Response){
+    try {
+      console.log(req.params, req.body);
+      const { id } = req.params;
+      await productService.updateProductById(id, req.body);
+      res.status(200).json({
+        message: `The product by id ${''} has successfully updated.`
+      })
+    } catch (e) {
+      res.status(400).json({
+        error: e.message
       });
     }
   }
