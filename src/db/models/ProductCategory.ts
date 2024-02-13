@@ -20,7 +20,7 @@ ProductCategory.init(
     sequelize,
     modelName: "ProductCategory",
     timestamps: false,
-  }
+  },
 );
 
 export default ProductCategory;

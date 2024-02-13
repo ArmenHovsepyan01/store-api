@@ -1,26 +1,25 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database";
 
-class ProductImage extends Model {}
+class ProductColors extends Model {}
 
-ProductImage.init(
+ProductColors.init(
   {
     id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       autoIncrement: true,
       primaryKey: true,
     },
-    imageUrl: {
+    color: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     sequelize,
-    modelName: "ProductImage",
+    modelName: "ProductColors",
     timestamps: false,
-  }
+  },
 );
 
-export default ProductImage;
+export default ProductColors;

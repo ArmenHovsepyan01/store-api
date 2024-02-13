@@ -1,6 +1,6 @@
 import sequelize from "../config/database";
 
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, InstanceDestroyOptions, Model } from "sequelize";
 
 import ProductImage from "./ProductImage";
 import ProductColors from "./ProductColors";
@@ -42,20 +42,24 @@ Product.init(
       type: DataTypes.TEXT,
     },
     sizes: {
-        type: DataTypes.JSON,
-        allowNull: false
+      type: DataTypes.JSON,
+      allowNull: false,
     },
-      colors: {
-        type: DataTypes.STRING,
-        allowNull: false
-      }
+    colors: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     sequelize,
     modelName: "Product",
     timestamps: false,
-  }
+  },
 );
+
+Product.addHook("beforeDestroy", (product) => {
+  console.log(product);
+});
 
 Product.hasMany(ProductImage, {
   as: "images",
@@ -76,9 +80,9 @@ Categories.belongsToMany(Product, {
 });
 
 // Product.hasMany(ProductCategories, { as: "categories", foreignKey: "productId" });
-
+//
 // (async () => {
-//   await Product.sync({ force: true });
+//   await Product.sync();
 //   await ProductImage.sync({ force: true });
 //   await ProductSizes.sync({ force: true });
 //   await ProductColors.sync({ force: true });

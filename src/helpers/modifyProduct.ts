@@ -10,7 +10,7 @@ export async function modifyProduct(product: IProduct) {
           productId: item.productId,
           imageUrl: await changeToBase64(item.imageUrl),
         };
-      })
+      }),
     );
 
     const main_image = await changeToBase64(product.main_image);

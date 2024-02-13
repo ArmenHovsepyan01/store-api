@@ -1,5 +1,3 @@
-import exp from "node:constants";
-
 export interface createUserParams {
   firstName: string;
   lastName: string;

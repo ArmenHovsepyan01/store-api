@@ -20,7 +20,7 @@ Categories.init(
     sequelize,
     modelName: "Categories",
     timestamps: false,
-  }
+  },
 );
 
 export default Categories;

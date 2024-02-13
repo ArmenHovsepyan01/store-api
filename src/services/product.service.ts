@@ -1,15 +1,12 @@
-import Product from "../models/Product";
-import ProductImage from "../models/ProductImage";
-import Categories from "../models/Categories";
-import ProductCategory from "../models/ProductCategory";
+import Product from "../db/models/Product";
+import ProductImage from "../db/models/ProductImage";
+import Categories from "../db/models/Categories";
+import ProductCategory from "../db/models/ProductCategory";
 
 import { IProduct } from "../definitions";
 
 import { createValuesFromReqBody } from "../helpers/createValuesFromReqBody";
-import { Op } from "sequelize"
-import * as QueryString from "querystring";
-import express from "express";
-import {createWhereClause} from "../helpers/createWhereClause";
+import { createWhereClause } from "../helpers/createWhereClause";
 
 interface createProductParams {
   name: string;
@@ -20,7 +17,8 @@ interface createProductParams {
   color: string;
   categoryId: string;
   main_image: string;
-  images: File [];
+  isPublished: boolean;
+  images: File[];
 }
 
 class ProductService {
@@ -36,6 +34,7 @@ class ProductService {
         color,
         sizes,
         categoryId,
+        isPublished,
       } = body;
       const productImages = images.map((item) => {
         return {
@@ -52,7 +51,8 @@ class ProductService {
           main_image: main_image,
           images: productImages,
           sizes: sizes,
-          colors: color
+          colors: color,
+          isPublished: isPublished,
         },
         {
           include: [
@@ -62,7 +62,7 @@ class ProductService {
             },
             { model: Categories, as: "category" },
           ],
-        }
+        },
       );
 
       await ProductCategory.create({
@@ -78,58 +78,57 @@ class ProductService {
 
   async getProductById(id: string) {
     try {
-      const product = await Product.findByPk(id, {
+      return await Product.findByPk(id, {
         include: [
           { model: ProductImage, as: "images" },
           { model: Categories, as: "category" },
         ],
       });
-
-      return product;
     } catch (e) {
       console.error(e);
       throw new Error(e);
     }
   }
 
-  async getAllProducts(queries: any) {
+  async getAllProducts(queries: any, isVerified?: boolean) {
     try {
-      const { productWhereClause, categoryWhereClause } = createWhereClause(queries);
-      console.log(productWhereClause, categoryWhereClause)
-      const products = await Product.findAll({
+      const { productWhereClause, categoryWhereClause } = createWhereClause(
+        queries,
+        isVerified,
+      );
+
+      return await Product.findAll({
         where: productWhereClause,
         include: [
           { model: ProductImage, as: "images" },
           { model: Categories, as: "category", where: categoryWhereClause },
         ],
       });
-
-      return products;
     } catch (e) {
       throw new Error(e);
     }
   }
 
-  async deleteProductById(id: string){
+  async deleteProductById(id: string) {
     try {
       return await Product.destroy({
+        hooks: true,
         where: {
-          id: id
-        }
+          id: id,
+        },
       });
     } catch (e) {
       throw new Error(e);
     }
   }
 
-  async updateProductById(id: string, fields: IProduct){
+  async updateProductById(id: string, fields: IProduct) {
     try {
       const values = createValuesFromReqBody(fields);
-      console.log(values)
       const data = await Product.update(values, {
         where: {
-          id: id
-        }
+          id: id,
+        },
       });
 
       console.log(data);

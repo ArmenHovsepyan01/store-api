@@ -3,6 +3,7 @@ import { Sequelize } from "sequelize";
 const sequelize = new Sequelize("store", "root", "PassWord$12", {
   host: "localhost",
   dialect: "mysql",
+  sync: { hooks: true },
 });
 
 export const connectToDB = async () => {
