@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "PassWord$12",
+    "database": "amazon",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root1",
+    "password": "PassWord$12",
+    "database": "amazon",
+    "host": "localhost",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root1",
+    "password": "PassWord$12",
+    "database": "amazon",
+    "host": "localhost",
+    "dialect": "mysql"
+  }
+}

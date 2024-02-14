@@ -1,12 +1,12 @@
-import Product from "../db/models/Product";
-import ProductImage from "../db/models/ProductImage";
-import Categories from "../db/models/Categories";
-import ProductCategory from "../db/models/ProductCategory";
+import Product from '../db/models/Product';
+import ProductImage from '../db/models/ProductImage';
+import Categories from '../db/models/Categories';
+import ProductCategory from '../db/models/ProductCategory';
 
-import { IProduct } from "../definitions";
+import { IProduct } from '../definitions';
 
-import { createValuesFromReqBody } from "../helpers/createValuesFromReqBody";
-import { createWhereClause } from "../helpers/createWhereClause";
+import { createValuesFromReqBody } from '../helpers/createValuesFromReqBody';
+import { createWhereClause } from '../helpers/createWhereClause';
 
 interface createProductParams {
   name: string;
@@ -34,11 +34,11 @@ class ProductService {
         color,
         sizes,
         categoryId,
-        isPublished,
+        isPublished
       } = body;
       const productImages = images.map((item) => {
         return {
-          imageUrl: item,
+          imageUrl: item
         };
       });
 
@@ -52,22 +52,22 @@ class ProductService {
           images: productImages,
           sizes: sizes,
           colors: color,
-          isPublished: isPublished,
+          isPublished: isPublished
         },
         {
           include: [
             {
               model: ProductImage,
-              as: "images",
+              as: 'images'
             },
-            { model: Categories, as: "category" },
-          ],
-        },
+            { model: Categories, as: 'category' }
+          ]
+        }
       );
 
       await ProductCategory.create({
         productId: product.dataValues.id,
-        categoryId: categoryId,
+        categoryId: categoryId
       });
 
       return product;
@@ -80,9 +80,9 @@ class ProductService {
     try {
       return await Product.findByPk(id, {
         include: [
-          { model: ProductImage, as: "images" },
-          { model: Categories, as: "category" },
-        ],
+          { model: ProductImage, as: 'images' },
+          { model: Categories, as: 'category' }
+        ]
       });
     } catch (e) {
       console.error(e);
@@ -92,17 +92,14 @@ class ProductService {
 
   async getAllProducts(queries: any, isVerified?: boolean) {
     try {
-      const { productWhereClause, categoryWhereClause } = createWhereClause(
-        queries,
-        isVerified,
-      );
+      const { productWhereClause, categoryWhereClause } = createWhereClause(queries, isVerified);
 
       return await Product.findAll({
         where: productWhereClause,
         include: [
-          { model: ProductImage, as: "images" },
-          { model: Categories, as: "category", where: categoryWhereClause },
-        ],
+          { model: ProductImage, as: 'images' },
+          { model: Categories, as: 'category', where: categoryWhereClause }
+        ]
       });
     } catch (e) {
       throw new Error(e);
@@ -114,8 +111,8 @@ class ProductService {
       return await Product.destroy({
         hooks: true,
         where: {
-          id: id,
-        },
+          id: id
+        }
       });
     } catch (e) {
       throw new Error(e);
@@ -127,8 +124,8 @@ class ProductService {
       const values = createValuesFromReqBody(fields);
       const data = await Product.update(values, {
         where: {
-          id: id,
-        },
+          id: id
+        }
       });
 
       console.log(data);

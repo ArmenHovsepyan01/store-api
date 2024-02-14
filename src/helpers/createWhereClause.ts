@@ -1,5 +1,5 @@
-import categories from "../db/models/Categories";
-import { Op } from "sequelize";
+import categories from '../db/models/Categories';
+import { Op } from 'sequelize';
 
 export const createWhereClause = (queries: any, isVerified?: boolean) => {
   const productWhereClause: {
@@ -9,27 +9,27 @@ export const createWhereClause = (queries: any, isVerified?: boolean) => {
   const categoryWhereClause: { id?: string } = {};
 
   for (const key in queries) {
-    if (key === "categoryId") {
+    if (key === 'categoryId') {
       categoryWhereClause.id = queries[key];
-    } else if (key === "price_min") {
+    } else if (key === 'price_min') {
       if (productWhereClause.price) {
         productWhereClause.price[Op.gte] = queries[key];
       } else {
         productWhereClause.price = {
-          [Op.gte]: queries[key],
+          [Op.gte]: queries[key]
         };
       }
-    } else if (key === "price_max") {
+    } else if (key === 'price_max') {
       if (productWhereClause.price) {
         productWhereClause.price[Op.lte] = queries[key];
       } else {
         productWhereClause.price = {
-          [Op.lte]: queries[key],
+          [Op.lte]: queries[key]
         };
       }
     } else {
       productWhereClause[key] = {
-        [Op.substring]: queries[key],
+        [Op.substring]: queries[key]
       };
     }
   }
@@ -38,6 +38,6 @@ export const createWhereClause = (queries: any, isVerified?: boolean) => {
 
   return {
     productWhereClause: productWhereClause,
-    categoryWhereClause: categoryWhereClause,
+    categoryWhereClause: categoryWhereClause
   };
 };

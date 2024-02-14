@@ -1,4 +1,4 @@
-import { IProduct } from "../definitions";
+import { IProduct } from '../definitions';
 
 export const createValuesFromReqBody = (fields: IProduct) => {
   const values = {};

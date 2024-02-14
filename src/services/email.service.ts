@@ -1,20 +1,20 @@
-import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
+import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
+  service: 'gmail',
+  host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
     user: process.env.MAIL,
-    pass: process.env.PASSWORD,
-  },
+    pass: process.env.PASSWORD
+  }
 });
 
 async function sendRegistrationVerificationMail(email: string) {
   const token = jwt.sign({ email }, process.env.SECRETKEY, {
-    expiresIn: "300s",
+    expiresIn: '300s'
   });
 
   const html = `<h1>Click the button to verify your account.</h1>
@@ -24,8 +24,8 @@ async function sendRegistrationVerificationMail(email: string) {
   const mailOptions = {
     from: process.env.MAIL,
     to: email,
-    subject: "Registration Confirmation",
-    html: html,
+    subject: 'Registration Confirmation',
+    html: html
   };
 
   try {

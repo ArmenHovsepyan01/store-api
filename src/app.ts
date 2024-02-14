@@ -1,12 +1,12 @@
-import express from "express";
+import express from 'express';
 
-import bodyParser from "body-parser";
+import bodyParser from 'body-parser';
 
-import cors from "cors";
+import cors from 'cors';
 
-import { connectToDB } from "./db/config/database";
+import db, { connectToDB } from './database/config/database';
 
-import router from "./router/router";
+import router from './router/router';
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -14,18 +14,16 @@ const port = process.env.PORT || 5001;
 const start = async () => {
   try {
     await connectToDB();
-    app.listen(port, () =>
-      console.log(`Express server is listening at http://localhost:${port}`),
-    );
+    app.listen(5555, () => console.log(`Express server is listening at http://localhost:${port}`));
   } catch (e) {
-    throw new Error(e);
+    throw e;
   }
 };
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/api", express.static("public"));
+app.use('/api', express.static('public'));
 app.use(express.json());
-app.use("/api", router);
+// app.use('/api', router);
 
 start();

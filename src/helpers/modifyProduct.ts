@@ -1,5 +1,5 @@
-import { IProduct } from "../definitions";
-import { changeToBase64 } from "./changeFromUrlToBase64";
+import { IProduct } from '../definitions';
+import { changeToBase64 } from './changeFromUrlToBase64';
 
 export async function modifyProduct(product: IProduct) {
   try {
@@ -8,9 +8,9 @@ export async function modifyProduct(product: IProduct) {
         return {
           id: item.id,
           productId: item.productId,
-          imageUrl: await changeToBase64(item.imageUrl),
+          imageUrl: await changeToBase64(item.imageUrl)
         };
-      }),
+      })
     );
 
     const main_image = await changeToBase64(product.main_image);

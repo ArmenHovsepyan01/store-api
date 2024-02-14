@@ -1,14 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from 'express';
 
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
-export async function getAllProductsForAuthUsers(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function getAllProductsForAuthUsers(req: Request, res: Response, next: NextFunction) {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization.split(' ')[1];
     await jwt.verify(token, process.env.SECRETKEY);
 
     req.body.isVerified = true;
