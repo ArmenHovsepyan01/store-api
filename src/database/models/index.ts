@@ -30,7 +30,6 @@ fs.readdirSync(__dirname)
     );
   })
   .forEach((file) => {
-    console.log(file);
     const model = require(`./${file.replace('.ts', '')}`).default(sequelize, DataTypes);
     db[model.name] = model;
   });

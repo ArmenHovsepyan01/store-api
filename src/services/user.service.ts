@@ -1,8 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import Product from '../db/models/Product';
-import User from '../db/models/User';
+import { User } from '../database/models/models';
 
 import sendRegistrationVerificationMail from './email.service';
 import { createUserParams, UserInterface } from '../definitions';
@@ -23,6 +22,7 @@ class UserService {
       throw new Error(e);
     }
   }
+
   async createUser(body: createUserParams) {
     try {
       const { firstName, lastName, password, email } = body;

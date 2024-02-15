@@ -1,12 +1,29 @@
 'use strict';
-import { Model } from 'sequelize';
-export default (sequelize, DataTypes) => {
-  class Categories extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
+import Sequelize, { Model, Optional } from 'sequelize';
+
+interface CategoriesAttributes {
+  id?: number;
+  category: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface CategoriesInput
+  extends Optional<CategoriesAttributes, 'id' | 'updatedAt' | 'createdAt'> {}
+export interface CategoriesOutput extends Required<CategoriesAttributes> {}
+
+export default (sequelize: any, DataTypes: any) => {
+  class Categories
+    extends Model<CategoriesAttributes, CategoriesInput>
+    implements CategoriesAttributes
+  {
+    id!: number;
+    category: string;
+
+    readonly updatedAt: Date;
+    readonly createdAt: Date;
+
     static associate(models) {
       this.hasMany(models.Product, {
         foreignKey: 'category_id',
@@ -28,6 +45,14 @@ export default (sequelize, DataTypes) => {
       category: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE
       }
     },
     {

@@ -4,7 +4,8 @@
     "password": "PassWord$12",
     "database": "amazon",
     "host": "localhost",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "logging": false
   },
   "test": {
     "username": "root1",

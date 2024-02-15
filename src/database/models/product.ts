@@ -1,15 +1,49 @@
 'use strict';
-import { Model } from 'sequelize';
-export default (sequelize, DataTypes) => {
-  class Product extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
+import Sequelize, { InstanceDestroyOptions, Model, Optional } from 'sequelize';
+import { HookReturn } from 'sequelize/lib/hooks';
+
+import fs from 'fs/promises';
+import path from 'path';
+
+interface ProductAttributes {
+  id?: number;
+  name: string;
+  description?: string;
+  brand: string;
+  price: number;
+  isPublished?: boolean;
+  main_img: string;
+  user_id: number;
+  category_id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ProductInput
+  extends Optional<
+    ProductAttributes,
+    'id' | 'createdAt' | 'updatedAt' | 'description' | 'isPublished'
+  > {}
+export interface ProductOutput extends Required<ProductAttributes> {}
+
+export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
+  class Product extends Model<ProductAttributes, ProductInput> implements ProductAttributes {
+    id!: number;
+    name: string;
+    description!: string;
+    brand: string;
+    price: number;
+    isPublished!: boolean;
+    main_img: string;
+    user_id: number;
+    category_id: number;
+
+    readonly createdAt!: Date;
+    readonly updatedAt!: Date;
+
+    static associate(models: any) {
       this.hasMany(models.ProductImages, {
-        foreignKey: 'product_id',
+        as: 'images',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       });
@@ -37,6 +71,11 @@ export default (sequelize, DataTypes) => {
         as: 'sizes',
         foreignKey: 'product_id',
         otherKey: 'sizes_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
+      this.hasMany(models.Cart, {
+        foreignKey: 'product_id',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
@@ -98,8 +137,16 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Product'
+      modelName: 'Product',
+      hooks: {
+        async beforeDestroy(instance: Product, options: InstanceDestroyOptions): Promise<void> {
+          console.log(`The item by id is deleted.`);
+          console.log(instance.id);
+          return await fs.writeFile(path.resolve('tst.txt'), 'Hello world', 'utf-8');
+        }
+      }
     }
   );
+
   return Product;
 };

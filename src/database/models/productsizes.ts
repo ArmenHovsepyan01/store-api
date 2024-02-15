@@ -1,18 +1,32 @@
 'use strict';
 
-import { Model } from 'sequelize';
+import Sequelize, { Model, Optional } from 'sequelize';
 
-export default (sequelize, DataTypes) => {
-  class ProductSizes extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
+interface ProductSizesAttributes {
+  id?: number;
+  product_id: number;
+  sizes_id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ProductSizesInput
+  extends Optional<ProductSizesAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface ProductSizesOutput extends Required<ProductSizesAttributes> {}
+
+export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
+  class ProductSizes
+    extends Model<ProductSizesAttributes, ProductSizesInput>
+    implements ProductSizesAttributes
+  {
+    id!: number;
+    product_id: number;
+    sizes_id: number;
+
+    readonly createdAt!: Date;
+    readonly updatedAt!: Date;
   }
+
   ProductSizes.init(
     {
       id: {

@@ -1,4 +1,4 @@
-import categories from '../db/models/Categories';
+import { Categories } from '../database/models/models';
 import { Op } from 'sequelize';
 
 export const createWhereClause = (queries: any, isVerified?: boolean) => {

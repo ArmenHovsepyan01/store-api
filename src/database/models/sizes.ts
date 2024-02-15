@@ -1,19 +1,31 @@
 'use strict';
 
-import { Model } from 'sequelize';
-export default (sequelize, DataTypes) => {
-  class Sizes extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
+import Sequelize, { Model, Optional } from 'sequelize';
+
+interface SizesAttributes {
+  id?: number;
+  size: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface SizesInput extends Optional<SizesAttributes, 'id' | 'updatedAt' | 'createdAt'> {}
+export interface SizesOutput extends Required<SizesAttributes> {}
+
+export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
+  class Sizes extends Model<SizesAttributes, SizesInput> implements SizesAttributes {
+    id!: number;
+    size: string;
+
+    readonly createdAt!: Date;
+    readonly updatedAt!: Date;
+
+    static associate(models: any) {
       this.belongsToMany(models.Product, {
         through: models.ProductSizes,
         as: 'products',
-        foreignKey: 'sizesId',
-        otherKey: 'productId',
+        foreignKey: 'sizes_id',
+        otherKey: 'product_id',
         onDelete: 'CASCADE'
       });
     }

@@ -1,2 +1,20 @@
 import db from './';
-import User from './user';
+import cartModelFunction from './cart';
+import userModelFunction from './user';
+import sizesModelFunction from './sizes';
+import categoriesModelFunction from './categories';
+import colorsModelFunction from './colors';
+import productModelFunction from './product';
+import productColorsModelFunction from './productcolors';
+import productImagesModelFunction from './productimages';
+import productSizesModelFunction from './productsizes';
+
+export const Cart: ReturnType<typeof cartModelFunction> = db.Cart;
+export const User: ReturnType<typeof userModelFunction> = db.User;
+export const Product: ReturnType<typeof productModelFunction> = db.Product;
+export const ProductImages: ReturnType<typeof productImagesModelFunction> = db.ProductImages;
+export const ProductSizes: ReturnType<typeof productSizesModelFunction> = db.ProductSizes;
+export const ProductColors: ReturnType<typeof productColorsModelFunction> = db.ProductColors;
+export const Sizes: ReturnType<typeof sizesModelFunction> = db.Sizes;
+export const Colors: ReturnType<typeof colorsModelFunction> = db.Colors;
+export const Categories: ReturnType<typeof categoriesModelFunction> = db.Categories;

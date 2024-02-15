@@ -1,15 +1,32 @@
 'use strict';
-const { Model } = require('sequelize');
-export default (sequelize, DataTypes) => {
-  class ProductColors extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
+
+import Sequelize, { Optional } from 'sequelize';
+
+import { Model } from 'sequelize';
+
+interface ProductColorsAttributes {
+  id?: number;
+  product_id: number;
+  colors_id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ProductColorsInput
+  extends Optional<ProductColorsAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface ProductColorsOutput extends Required<ProductColorsAttributes> {}
+
+export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
+  class ProductColors
+    extends Model<ProductColorsAttributes, ProductColorsInput>
+    implements ProductColorsAttributes
+  {
+    id?: number;
+    product_id: number;
+    colors_id: number;
+
+    readonly createdAt?: Date;
+    readonly updatedAt?: Date;
   }
 
   ProductColors.init(

@@ -1,20 +1,32 @@
 'use strict';
 
-import { Model } from 'sequelize';
+import Sequelize, { Model, Optional } from 'sequelize';
 
-export default (sequelize, DataTypes) => {
-  class ProductImages extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      this.belongsTo(models.Product, {
-        as: 'images',
-        foreignKey: 'productId',
-        onDelete: 'CASCADE'
-      });
+interface ProductImagesAttributes {
+  id?: number;
+  image_url: string;
+  productId: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface ProductImagesInput
+  extends Optional<ProductImagesAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+export interface ProductImagesOutput extends Required<ProductImagesAttributes> {}
+
+export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
+  class ProductImages
+    extends Model<ProductImagesAttributes, ProductImagesInput>
+    implements ProductImagesAttributes
+  {
+    id!: number;
+    image_url: string;
+    productId: number;
+
+    readonly createdAt!: Date;
+    readonly updatedAt!: Date;
+    static associate(models: any) {
+      this.belongsTo(models.Product);
     }
   }
 
