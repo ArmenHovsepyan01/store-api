@@ -1,8 +1,7 @@
 'use strict';
 import Sequelize, { InstanceDestroyOptions, Model, Optional } from 'sequelize';
-import { HookReturn } from 'sequelize/lib/hooks';
 
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 
 interface ProductAttributes {
@@ -140,13 +139,21 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
       modelName: 'Product',
       hooks: {
         async beforeDestroy(instance: Product, options: InstanceDestroyOptions): Promise<void> {
-          console.log(`The item by id is deleted.`);
-          console.log(instance.id);
-          return await fs.writeFile(path.resolve('tst.txt'), 'Hello world', 'utf-8');
+          //@ts-ignore
+          const images = await instance.getImages();
+
+          for (const image of images) {
+            const imagePath = path.join(path.resolve(), 'public', image.image_url);
+            if (fs.existsSync(imagePath)) await fs.promises.unlink(imagePath);
+          }
+
+          const mainImagePath = path.join(path.resolve(), 'public', instance.main_img);
+          if (fs.existsSync(mainImagePath)) await fs.promises.unlink(mainImagePath);
         }
       }
     }
   );
+  console.log();
 
   return Product;
 };

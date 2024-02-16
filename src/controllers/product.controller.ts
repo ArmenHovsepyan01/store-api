@@ -3,21 +3,23 @@ import { Request, Response } from 'express';
 import ProductServices from '../services/product.service';
 
 import { extractRelativePath } from '../helpers/extractRelativePath';
+import { UploadedFile } from '../definitions';
 
 async function create(req: Request, res: Response) {
   try {
+    const mainImage = (req.files as UploadedFile[]).find((item) => item.fieldname === 'main_image');
+
     const fields = {
       ...req.body,
-      main_image: extractRelativePath(req.files[0].path)
+      main_image: extractRelativePath(mainImage.path)
     };
 
-    console.log(extractRelativePath(req.files[0].path));
     fields.images = (req.files as Express.Multer.File[])
       .filter((item) => item.fieldname === 'images')
       .map((item) => extractRelativePath(item.path));
 
-    await ProductServices.createProduct(fields);
-    res.status(200).json(req.body);
+    const product = await ProductServices.createProduct(fields);
+    res.status(200).json(product);
   } catch (e) {
     res.status(400).json({
       error: e.message

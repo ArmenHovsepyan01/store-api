@@ -1,7 +1,6 @@
 'use strict';
 
-import Sequelize, { Model, Optional } from 'sequelize';
-
+import Sequelize, { InstanceDestroyOptions, Model, Optional } from 'sequelize';
 interface ProductImagesAttributes {
   id?: number;
   image_url: string;

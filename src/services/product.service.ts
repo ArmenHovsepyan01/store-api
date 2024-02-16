@@ -30,18 +30,28 @@ interface createProductParams {
 const productIncludes = [
   {
     model: Colors,
-    as: 'colors'
+    as: 'colors',
+    attributes: ['id', 'color'],
+    through: {
+      attributes: []
+    }
   },
   {
     model: Sizes,
-    as: 'sizes'
+    as: 'sizes',
+    attributes: ['id', 'size'],
+    through: {
+      attributes: []
+    }
   },
   {
     model: ProductImages,
-    as: 'images'
+    as: 'images',
+    attributes: ['id', 'image_url']
   },
   {
     model: Categories,
+    attributes: ['id', 'category'],
     as: 'category'
   }
 ];
@@ -60,6 +70,8 @@ async function createProduct(body: createProductParams) {
       categoryId,
       isPublished
     } = body;
+
+    console.log(main_image, images);
 
     const t = await db.sequelize.transaction();
 
@@ -99,18 +111,21 @@ async function createProduct(body: createProductParams) {
       }
     );
 
-    const productImages = images.map((item) => {
-      return {
-        image_url: item,
-        productId: product.id
-      };
-    });
-
-    await ProductImages.bulkCreate(productImages, {
-      transaction: t
-    });
+    await ProductImages.bulkCreate(
+      images.map((item) => {
+        return {
+          image_url: item,
+          productId: product.id
+        };
+      }),
+      {
+        transaction: t
+      }
+    );
 
     await t.commit();
+
+    return product;
   } catch (e) {
     throw new Error(e);
   }
@@ -128,10 +143,10 @@ async function getProductById(id: string) {
 
 async function getAllProducts(queries: any, isVerified?: boolean) {
   try {
-    const { productWhereClause, categoryWhereClause } = createWhereClause(queries, isVerified);
+    const productWhereClause = createWhereClause(queries, isVerified);
 
     return await Product.findAll({
-      // where: productWhereClause,
+      where: productWhereClause,
       include: productIncludes
     });
   } catch (e) {

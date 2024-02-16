@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express, { Router, Request } from 'express';
 
 import multer from 'multer';
 
@@ -13,7 +13,16 @@ import { validateProductCreateBody } from '../validators/createProductValidator'
 
 const router = Router();
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  fileFilter(req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp|avif)$/)) {
+      return callback(new Error(`File type is not supported`));
+    }
+
+    callback(null, true);
+  }
+});
 
 router
   .route('/product')

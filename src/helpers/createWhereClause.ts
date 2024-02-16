@@ -1,16 +1,19 @@
-import { Categories } from '../database/models/models';
 import { Op } from 'sequelize';
 
 export const createWhereClause = (queries: any, isVerified?: boolean) => {
   const productWhereClause: {
     price?: {};
     isPublished?: boolean;
+    category_id?: number | string;
   } = {};
-  const categoryWhereClause: { id?: string } = {};
+
+  // const productSizesWhereClause: {
+  //
+  // }
 
   for (const key in queries) {
     if (key === 'categoryId') {
-      categoryWhereClause.id = queries[key];
+      productWhereClause.category_id = queries[key];
     } else if (key === 'price_min') {
       if (productWhereClause.price) {
         productWhereClause.price[Op.gte] = queries[key];
@@ -28,16 +31,14 @@ export const createWhereClause = (queries: any, isVerified?: boolean) => {
         };
       }
     } else {
-      productWhereClause[key] = {
-        [Op.substring]: queries[key]
-      };
+      console.log(queries[key]);
+      // productWhereClause[key] = {
+      //   [Op.substring]: queries[key]
+      // };
     }
   }
 
   if (!isVerified) productWhereClause.isPublished = true;
 
-  return {
-    productWhereClause: productWhereClause,
-    categoryWhereClause: categoryWhereClause
-  };
+  return productWhereClause;
 };
