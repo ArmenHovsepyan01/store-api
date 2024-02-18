@@ -25,6 +25,7 @@ interface createProductParams {
   main_image: string;
   isPublished: boolean;
   images: string[];
+  user_id: number;
 }
 
 const productIncludes = [
@@ -68,10 +69,11 @@ async function createProduct(body: createProductParams) {
       color,
       sizes,
       categoryId,
-      isPublished
+      isPublished,
+      user_id
     } = body;
 
-    console.log(main_image, images);
+    console.log(body);
 
     const t = await db.sequelize.transaction();
 
@@ -84,7 +86,7 @@ async function createProduct(body: createProductParams) {
         isPublished: isPublished,
         main_img: main_image,
         category_id: +categoryId,
-        user_id: 3
+        user_id: +user_id
       },
       {
         transaction: t
@@ -170,13 +172,12 @@ async function deleteProductById(id: string) {
 async function updateProductById(id: string, fields: IProduct) {
   try {
     const values = createValuesFromReqBody(fields);
-    const data = await Product.update(values, {
+
+    return await Product.update(values, {
       where: {
         id: id
       }
     });
-
-    console.log(data);
   } catch (e) {
     throw new Error(e);
   }

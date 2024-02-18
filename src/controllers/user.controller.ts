@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import userServices from '../services/user.service';
+import { log } from 'node:console';
 
 async function register(req: Request, res: Response) {
   try {
@@ -16,6 +17,7 @@ async function register(req: Request, res: Response) {
 async function verify(req: Request, res: Response) {
   try {
     const message = await userServices.verifyUser(req.query.token);
+    log(message);
     res.status(300).redirect('http://localhost:3000/login');
   } catch (e) {
     res.status(500).json({

@@ -10,6 +10,7 @@ import { validate } from '../middleware/validate';
 import { getAllProductsForAuthUsers } from '../middleware/getAllProductsForAuthUsers';
 
 import { validateProductCreateBody } from '../validators/createProductValidator';
+import { checkUser } from '../middleware/checkUser';
 
 const router = Router();
 
@@ -33,7 +34,7 @@ router.route('/products').get(getAllProductsForAuthUsers, productController.get)
 router
   .route('/product/:id')
   .get(productController.getById)
-  .delete(productController.deleteById)
-  .put(productController.update);
+  .delete(checkUser, productController.deleteById)
+  .put(checkUser, productController.update);
 
 export default router;

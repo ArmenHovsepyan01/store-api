@@ -5,11 +5,14 @@ import userRouter from './user.router';
 import colorsRouter from './colors.router';
 import sizesRouter from './sizes.router';
 import categoriesRouter from './categories.router';
+import cartRouter from './cart.router';
 
 const router = Router();
 
 router.use('/', productRouter);
 router.use('/users', userRouter);
+
+router.use('/cart', cartRouter);
 
 router.use('/colors', colorsRouter);
 router.use('/sizes', sizesRouter);

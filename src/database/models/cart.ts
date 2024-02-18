@@ -18,6 +18,7 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     id!: number;
     user_id!: number;
     product_id!: number;
+    quantity!: number;
 
     readonly updatedAt!: Date;
     readonly createdAt!: Date;

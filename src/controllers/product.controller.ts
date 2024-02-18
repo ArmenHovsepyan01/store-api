@@ -19,6 +19,7 @@ async function create(req: Request, res: Response) {
       .map((item) => extractRelativePath(item.path));
 
     const product = await ProductServices.createProduct(fields);
+
     res.status(200).json(product);
   } catch (e) {
     res.status(400).json({
@@ -61,7 +62,13 @@ async function get(req: Request, res: Response) {
 async function deleteById(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    await ProductServices.deleteProductById(id);
+    const info = await ProductServices.deleteProductById(id);
+    if (!info) {
+      return res.status(203).json({
+        message: `There is no product by id ${id}.`
+      });
+    }
+
     res.status(200).json({
       message: `The product by id ${id} has successfully deleted.`
     });
@@ -74,11 +81,18 @@ async function deleteById(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    console.log(req.params, req.body);
     const { id } = req.params;
-    await ProductServices.updateProductById(id, req.body);
+    console.log(req.body);
+    const info = await ProductServices.updateProductById(id, req.body);
+
+    if (!info) {
+      res.status(200).json({
+        message: `The product by id ${id} can't be updated.`
+      });
+    }
+
     res.status(200).json({
-      message: `The product by id ${''} has successfully updated.`
+      message: `The product by id ${id} has successfully updated.`
     });
   } catch (e) {
     res.status(400).json({
