@@ -41,8 +41,8 @@ async function login(req: Request, res: Response) {
 
 async function auth(req: Request, res: Response) {
   try {
-    const { email } = req.body;
-    const user = await userServices.getUser(email);
+    const { user_id } = req.body;
+    const user = await userServices.getUser(user_id);
 
     res.status(200).json(user);
   } catch (e) {

@@ -2,21 +2,27 @@ import { Request, Response, NextFunction } from 'express';
 
 import jwt from 'jsonwebtoken';
 import { User } from '../database/models/models';
+import { Logger } from 'sequelize/lib/utils/logger';
 
 export async function checkUser(req: Request, res: Response, next: NextFunction) {
   try {
+    if (!req.headers.authorization) {
+      return res.status(400).json({
+        error: 'Missing authorization headers.'
+      });
+    }
+
     const token = req.headers.authorization.split(' ')[1];
     const info = await jwt.verify(token, process.env.SECRETKEY);
+    const user = await User.findByPk(info.id);
 
-    const user = await User.findOne({
-      where: {
-        email: info.email
-      }
-    });
+    if (!user) {
+      return res.status(401).json({
+        error: 'User access denied.'
+      });
+    }
 
-    if (!user) throw new Error('User access denied.');
-
-    req.body.email = info.email;
+    req.body.user_id = info.id;
 
     next();
   } catch (e) {

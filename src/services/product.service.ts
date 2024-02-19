@@ -93,6 +93,7 @@ async function createProduct(body: createProductParams) {
       }
     );
 
+    // do this with hooks, afterCreate
     await ProductSizes.create(
       {
         product_id: product.id,
@@ -146,6 +147,7 @@ async function getProductById(id: string) {
 async function getAllProducts(queries: any, isVerified?: boolean) {
   try {
     const productWhereClause = createWhereClause(queries, isVerified);
+    console.log(productWhereClause);
 
     return await Product.findAll({
       where: productWhereClause,

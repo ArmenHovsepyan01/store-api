@@ -7,9 +7,7 @@ export const createWhereClause = (queries: any, isVerified?: boolean) => {
     category_id?: number | string;
   } = {};
 
-  // const productSizesWhereClause: {
-  //
-  // }
+  const productSizesWhereClause = {};
 
   for (const key in queries) {
     if (key === 'categoryId') {
@@ -31,10 +29,9 @@ export const createWhereClause = (queries: any, isVerified?: boolean) => {
         };
       }
     } else {
-      console.log(queries[key]);
-      // productWhereClause[key] = {
-      //   [Op.substring]: queries[key]
-      // };
+      productWhereClause[key] = {
+        [Op.substring]: queries[key]
+      };
     }
   }
 

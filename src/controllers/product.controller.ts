@@ -82,7 +82,6 @@ async function deleteById(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    console.log(req.body);
     const info = await ProductServices.updateProductById(id, req.body);
 
     if (!info) {

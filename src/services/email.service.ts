@@ -12,8 +12,8 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-async function sendRegistrationVerificationMail(email: string) {
-  const token = jwt.sign({ email }, process.env.SECRETKEY, {
+async function sendRegistrationVerificationMail(email: string, id: number) {
+  const token = jwt.sign({ id }, process.env.SECRETKEY, {
     expiresIn: '300s'
   });
 

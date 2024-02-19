@@ -1,11 +1,11 @@
 import { Cart, Product } from '../database/models/models';
-import product from '../database/models/product';
 
 async function getAll(user_id: number) {
+  console.log(user_id);
   try {
     return await Cart.findAll({
       where: {
-        id: user_id
+        user_id: user_id
       },
       include: [
         {
@@ -18,7 +18,7 @@ async function getAll(user_id: number) {
   }
 }
 
-async function addToCart(product_id: number, user_id: number) {
+async function addToCart(product_id: number, user_id: number, decrease?: boolean) {
   try {
     const cartProduct = await Cart.findOne({
       where: {
@@ -28,9 +28,14 @@ async function addToCart(product_id: number, user_id: number) {
     });
 
     if (cartProduct) {
-      return await Cart.update(
+      const newQuantity = decrease
+        ? cartProduct.quantity > 1
+          ? cartProduct.quantity - 1
+          : cartProduct.quantity
+        : cartProduct.quantity + 1;
+      await Cart.update(
         {
-          quantity: cartProduct.quantity + 1
+          quantity: newQuantity
         },
         {
           where: {
@@ -38,12 +43,26 @@ async function addToCart(product_id: number, user_id: number) {
           }
         }
       );
+
+      return await Cart.findByPk(cartProduct.id, {
+        include: [
+          {
+            model: Product
+          }
+        ]
+      });
     }
 
-    return await Cart.create({
+    const cartItem = await Cart.create({
       product_id,
       user_id
     });
+    const product = await Product.findByPk(cartItem.product_id);
+
+    return {
+      ...cartItem.dataValues,
+      Product: product
+    };
   } catch (e) {
     throw new Error(e);
   }

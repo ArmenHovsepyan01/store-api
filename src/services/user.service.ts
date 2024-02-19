@@ -7,15 +7,11 @@ import sendRegistrationVerificationMail from './email.service';
 import { createUserParams, UserInterface } from '../definitions';
 
 class UserService {
-  async getUser(email: string) {
+  async getUser(id: number) {
     try {
-      const user = await User.findOne({
-        where: {
-          email: email
-        }
-      });
+      const user = await User.findByPk(id);
 
-      if (!user) throw new Error(`There is no user by this mail ${email}`);
+      if (!user) throw new Error(`There is no user by this mail.`);
 
       return user;
     } catch (e) {
@@ -52,7 +48,7 @@ class UserService {
         password: hashedPassword
       });
 
-      const info = await sendRegistrationVerificationMail(email);
+      const info = await sendRegistrationVerificationMail(email, newUser.id);
 
       return {
         user: newUser,
@@ -69,7 +65,7 @@ class UserService {
       const decoded = await jwt.verify(token, process.env.SECRETKEY);
       const user = await User.findOne({
         where: {
-          email: decoded.email
+          id: decoded.id
         }
       });
 
@@ -103,7 +99,7 @@ class UserService {
 
       if (!comparePasswords) throw new Error('Password is incorrect.');
 
-      const token = jwt.sign({ email }, process.env.SECRETKEY);
+      const token = jwt.sign({ id: user.id }, process.env.SECRETKEY);
 
       return {
         message: 'User logged in.',
