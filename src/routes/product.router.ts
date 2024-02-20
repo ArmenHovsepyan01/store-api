@@ -1,4 +1,4 @@
-import express, { Router, Request } from 'express';
+import { Router, Request } from 'express';
 
 import multer from 'multer';
 
@@ -11,8 +11,7 @@ import { getAllProductsForAuthUsers } from '../middleware/getAllProductsForAuthU
 
 import { validateProductCreateBody } from '../validators/createProductValidator';
 import { checkUser } from '../middleware/checkUser';
-import * as net from 'net';
-import { handleMulterErrors } from '../middleware/handleMulterErrors';
+import { unsupportedFileMiddleware } from '../middleware/handleMulterErrors';
 
 const router = Router();
 
@@ -20,8 +19,7 @@ const upload = multer({
   storage: storage,
   fileFilter(req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) {
     if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp|avif)$/)) {
-      console.log(2131231231231243324);
-      throw 'something went wrong';
+      callback(null, false);
     }
 
     callback(null, true);
@@ -30,12 +28,7 @@ const upload = multer({
 
 router
   .route('/product')
-  .post(
-    upload.single('main_image'),
-    handleMulterErrors,
-    validate(validateProductCreateBody),
-    productController.create
-  );
+  .post(upload.any(), validate(validateProductCreateBody), productController.create);
 
 router.route('/products').get(getAllProductsForAuthUsers, productController.get);
 

@@ -46,9 +46,9 @@ async function getById(req: Request, res: Response) {
 async function get(req: Request, res: Response) {
   try {
     const queries = req.query;
-    const { isVerified } = req.body;
+    const { isVerified, user_id } = req.body;
 
-    const products = await ProductServices.getAllProducts(queries, isVerified);
+    const products = await ProductServices.getAllProducts(queries, isVerified, user_id);
 
     res.status(200).json({
       product: products

@@ -1,7 +1,6 @@
 import { Cart, Product } from '../database/models/models';
 
 async function getAll(user_id: number) {
-  console.log(user_id);
   try {
     return await Cart.findAll({
       where: {

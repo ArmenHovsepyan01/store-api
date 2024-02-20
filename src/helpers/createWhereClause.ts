@@ -1,13 +1,11 @@
 import { Op } from 'sequelize';
 
-export const createWhereClause = (queries: any, isVerified?: boolean) => {
+export const createWhereClause = (queries: any, isVerified?: boolean, user_id?: number) => {
   const productWhereClause: {
     price?: {};
     isPublished?: boolean;
     category_id?: number | string;
   } = {};
-
-  const productSizesWhereClause = {};
 
   for (const key in queries) {
     if (key === 'categoryId') {
@@ -36,6 +34,18 @@ export const createWhereClause = (queries: any, isVerified?: boolean) => {
   }
 
   if (!isVerified) productWhereClause.isPublished = true;
+
+  if (user_id) {
+    productWhereClause[Op.or] = [
+      { isPublished: true },
+      {
+        user_Id: user_id,
+        isPublished: {
+          [Op.in]: [false, null]
+        }
+      }
+    ];
+  }
 
   return productWhereClause;
 };

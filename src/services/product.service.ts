@@ -13,6 +13,7 @@ import { IProduct } from '../definitions';
 import { createValuesFromReqBody } from '../helpers/createValuesFromReqBody';
 import { createWhereClause } from '../helpers/createWhereClause';
 import db from '../database/models';
+import user from '../database/models/user';
 
 interface createProductParams {
   name: string;
@@ -144,10 +145,9 @@ async function getProductById(id: string) {
   }
 }
 
-async function getAllProducts(queries: any, isVerified?: boolean) {
+async function getAllProducts(queries: any, isVerified?: boolean, user_id?: number) {
   try {
-    const productWhereClause = createWhereClause(queries, isVerified);
-    console.log(productWhereClause);
+    const productWhereClause = createWhereClause(queries, isVerified, user_id);
 
     return await Product.findAll({
       where: productWhereClause,

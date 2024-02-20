@@ -2,19 +2,16 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert(
-      'Colors',
-      [
-        { color: 'Red', createdAt: new Date(), updatedAt: new Date() },
-        { color: 'Green', createdAt: new Date(), updatedAt: new Date() },
-        { color: 'Blue', createdAt: new Date(), updatedAt: new Date() }
-      ],
-      {}
-    );
+  async up(queryInterface) {
+    await queryInterface.bulkInsert('Colors', [
+      { color: 'Orange', createdAt: new Date(), updatedAt: new Date() },
+      { color: 'Black', createdAt: new Date(), updatedAt: new Date() },
+      { color: 'Yellow', createdAt: new Date(), updatedAt: new Date() },
+      { color: 'Indigo', createdAt: new Date(), updatedAt: new Date() }
+    ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.bulkDelete('Colors', null, {});
   }
 };

@@ -6,6 +6,7 @@ import colorsRouter from './colors.router';
 import sizesRouter from './sizes.router';
 import categoriesRouter from './categories.router';
 import cartRouter from './cart.router';
+import favoritesRoute from './favorites.route';
 
 const router = Router();
 
@@ -17,5 +18,7 @@ router.use('/cart', cartRouter);
 router.use('/colors', colorsRouter);
 router.use('/sizes', sizesRouter);
 router.use('/categories', categoriesRouter);
+
+router.use('/favorites', favoritesRoute);
 
 export default router;

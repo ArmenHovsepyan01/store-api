@@ -78,6 +78,11 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
+      this.hasMany(models.Favorites, {
+        foreignKey: 'product_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
     }
   }
 
