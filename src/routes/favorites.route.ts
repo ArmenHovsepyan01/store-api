@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import favoritesController from '../controllers/favorites.controller';
+
 import { checkUser } from '../middleware/checkUser';
+
+import favoritesController from '../controllers/favorites.controller';
 
 const router = Router();
 
