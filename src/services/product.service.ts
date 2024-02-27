@@ -5,7 +5,8 @@ import {
   Sizes,
   ProductSizes,
   ProductColors,
-  ProductImages
+  ProductImages,
+  Favorites
 } from '../database/models/models';
 
 import { IProduct } from '../definitions';
@@ -13,7 +14,6 @@ import { IProduct } from '../definitions';
 import { createValuesFromReqBody } from '../helpers/createValuesFromReqBody';
 import { createWhereClause } from '../helpers/createWhereClause';
 import db from '../database/models';
-import user from '../database/models/user';
 
 interface createProductParams {
   name: string;

@@ -18,7 +18,7 @@ async function verify(req: Request, res: Response) {
   try {
     const message = await userServices.verifyUser(req.query.token);
     log(message);
-    res.status(300).redirect('http://localhost:3000/login');
+    res.status(300).redirect('http://localhost:3000/login?confirmed=true');
   } catch (e) {
     res.status(500).json({
       error: e.message

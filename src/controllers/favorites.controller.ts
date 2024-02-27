@@ -1,4 +1,4 @@
-import { NextFunction, Response, Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import favoritesService from '../services/favorites.service';
 
 async function get(req: Request, res: Response, next: NextFunction) {
@@ -15,11 +15,11 @@ async function get(req: Request, res: Response, next: NextFunction) {
 
 async function add(req: Request, res: Response) {
   try {
-    const { user_id, product_id } = req.body;
-    const data = await favoritesService.addToFavorites(user_id, product_id);
+    const { user_id, product_id, decrease } = req.body;
+    const data = await favoritesService.addToFavorites(user_id, product_id, decrease);
 
     res.status(200).json({
-      message: 'Product added successfully.',
+      message: `Product ${decrease ? 'removed' : 'added'} successfully.`,
       data
     });
   } catch (e) {
