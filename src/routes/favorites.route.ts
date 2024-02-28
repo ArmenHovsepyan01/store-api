@@ -8,6 +8,7 @@ const router = Router();
 
 router.route('/').get(checkUser, favoritesController.get);
 router.route('/').post(checkUser, favoritesController.add);
-router.route('/').delete(checkUser, favoritesController.deleteFromFavorites);
+router.route('/sync').post(checkUser, favoritesController.syncFavorites);
+router.route('/:id').delete(checkUser, favoritesController.deleteFromFavorites);
 
 export default router;

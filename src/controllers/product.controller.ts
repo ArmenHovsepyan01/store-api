@@ -4,6 +4,7 @@ import ProductServices from '../services/product.service';
 
 import { extractRelativePath } from '../helpers/extractRelativePath';
 import { UploadedFile } from '../definitions';
+import productService from '../services/product.service';
 
 async function create(req: Request, res: Response) {
   try {
@@ -100,10 +101,26 @@ async function update(req: Request, res: Response) {
   }
 }
 
+async function getUserProducts(req: Request, res: Response) {
+  try {
+    const { user_id } = req.body;
+    const products = await productService.getUserProducts(user_id);
+
+    res.status(200).json({
+      product: products
+    });
+  } catch (e) {
+    res.status(401).json({
+      error: e.message
+    });
+  }
+}
+
 export default {
   create,
   get,
   getById,
   update,
-  deleteById
+  deleteById,
+  getUserProducts
 };

@@ -185,10 +185,23 @@ async function updateProductById(id: string, fields: IProduct) {
   }
 }
 
+async function getUserProducts(id: number) {
+  try {
+    return await Product.findAll({
+      where: {
+        user_id: id
+      }
+    });
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
 export default {
   createProduct,
   getProductById,
   getAllProducts,
   deleteProductById,
-  updateProductById
+  updateProductById,
+  getUserProducts
 };

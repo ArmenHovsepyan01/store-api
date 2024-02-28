@@ -32,7 +32,8 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
         foreignKey: 'user_id'
       });
       this.belongsTo(models.Product, {
-        foreignKey: 'product_id'
+        foreignKey: 'product_id',
+        as: 'product'
       });
     }
   }

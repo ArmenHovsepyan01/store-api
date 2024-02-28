@@ -31,6 +31,7 @@ router
   .post(upload.any(), validate(validateProductCreateBody), productController.create);
 
 router.route('/products').get(getAllProductsForAuthUsers, productController.get);
+router.route('/user-products').get(getAllProductsForAuthUsers, productController.getUserProducts);
 
 router
   .route('/product/:id')
