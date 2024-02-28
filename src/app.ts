@@ -19,7 +19,7 @@ const start = async () => {
     DeleteUnverifiedUsers();
     app.listen(port, () => console.log(`Express server is listening at http://localhost:${port}`));
   } catch (e) {
-    throw e;
+    throw new Error(e);
   }
 };
 

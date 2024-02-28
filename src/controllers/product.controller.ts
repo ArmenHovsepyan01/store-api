@@ -8,6 +8,7 @@ import productService from '../services/product.service';
 
 async function create(req: Request, res: Response) {
   try {
+    console.log(req.files, req.body);
     const mainImage = (req.files as UploadedFile[]).find((item) => item.fieldname === 'main_image');
 
     const fields = {
