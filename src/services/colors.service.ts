@@ -8,6 +8,30 @@ async function getAllColors() {
   }
 }
 
+async function createColor(color: string) {
+  try {
+    return await Colors.create({ color });
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
+async function deleteColor(id: number) {
+  try {
+    await Colors.destroy({
+      where: {
+        id
+      }
+    });
+
+    return `Color with id ${id} successfully deleted.`;
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
 export default {
-  getAllColors
+  getAllColors,
+  deleteColor,
+  createColor
 };

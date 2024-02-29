@@ -9,6 +9,30 @@ async function getAllSizes(): Promise<SizesOutput[]> {
   }
 }
 
+async function createSize(size: string) {
+  try {
+    return await Sizes.create({ size });
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
+
+async function deleteSize(id: number) {
+  try {
+    await Sizes.destroy({
+      where: {
+        id
+      }
+    });
+
+    return `Size with id ${id} deleted successfully.`;
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
 export default {
-  getAllSizes
+  getAllSizes,
+  createSize,
+  deleteSize
 };

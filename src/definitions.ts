@@ -3,6 +3,7 @@ export interface createUserParams {
   lastName: string;
   email: string;
   password: string;
+  role?: string;
 }
 
 export interface UserInterface {

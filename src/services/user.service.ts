@@ -5,6 +5,7 @@ import { User } from '../database/models/models';
 
 import sendRegistrationVerificationMail from './email.service';
 import { createUserParams, UserInterface } from '../definitions';
+import { UserRoles } from '../enums';
 
 class UserService {
   async getUser(id: number) {
@@ -21,13 +22,26 @@ class UserService {
 
   async createUser(body: createUserParams) {
     try {
-      const { firstName, lastName, password, email } = body;
+      const { firstName, lastName, password, email, role } = body;
 
       const isUserExists = await User.findOne({
         where: {
           email: email
         }
       });
+
+      // if (role && role !== UserRoles.USER && role !== UserRoles.ADMIN)
+      // throw new Error(`Violation user role can't be ${role}.`);
+
+      // if (role === UserRoles.ADMIN) {
+      //   const admin = await User.findOne({
+      //     where: {
+      //       role: UserRoles.ADMIN
+      //     }
+      //   });
+      //
+      //   if (admin) throw new Error("You can't use admin privileges.");
+      // }
 
       if (isUserExists && !isUserExists.dataValues.isVerified)
         throw new Error(
@@ -42,10 +56,11 @@ class UserService {
       const hashedPassword = await bcrypt.hash(password, 7);
 
       const newUser = await User.create({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: hashedPassword
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        role
       });
 
       const info = await sendRegistrationVerificationMail(email, newUser.id);

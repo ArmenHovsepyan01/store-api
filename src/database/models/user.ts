@@ -7,6 +7,7 @@ interface UserAttributes {
   email: string;
   password: string;
   isVerified: boolean;
+  role: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -22,6 +23,7 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     email: string;
     password: string;
     isVerified: boolean;
+    role: string;
 
     readonly createdAt!: Date;
     readonly updatedAt!: Date;
@@ -73,6 +75,18 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
       isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+      },
+      role: {
+        type: DataTypes.STRING,
+        defaultValue: 'user',
+        validate: {
+          isAdmin: async (value) => {
+            const admin = await User.findOne({ where: { role: 'admin' } });
+            if (value === 'admin' && admin) {
+              throw new Error('Only one admin user can be created.');
+            }
+          }
+        }
       }
     },
     {

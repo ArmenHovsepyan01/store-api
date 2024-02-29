@@ -9,6 +9,30 @@ async function getAllCategories(): Promise<CategoriesOutput[]> {
   }
 }
 
+async function createCategory(category: string) {
+  try {
+    return await Categories.create({ category });
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
+async function deleteCategory(id: number) {
+  try {
+    await Categories.destroy({
+      where: {
+        id
+      }
+    });
+
+    return `Category with id ${id} deleted successfully.`;
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
 export default {
-  getAllCategories
+  getAllCategories,
+  createCategory,
+  deleteCategory
 };

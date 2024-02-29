@@ -11,7 +11,6 @@ import { getAllProductsForAuthUsers } from '../middleware/getAllProductsForAuthU
 
 import { validateProductCreateBody } from '../validators/createProductValidator';
 import { checkUser } from '../middleware/checkUser';
-import { unsupportedFileMiddleware } from '../middleware/handleMulterErrors';
 
 const router = Router();
 
