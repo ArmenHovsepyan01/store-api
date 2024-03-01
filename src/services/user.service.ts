@@ -4,8 +4,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '../database/models/models';
 
 import sendRegistrationVerificationMail from './email.service';
-import { createUserParams, UserInterface } from '../definitions';
-import { UserRoles } from '../enums';
+import { createUserParams } from '../definitions';
 
 class UserService {
   async getUser(id: number) {
@@ -29,19 +28,6 @@ class UserService {
           email: email
         }
       });
-
-      // if (role && role !== UserRoles.USER && role !== UserRoles.ADMIN)
-      // throw new Error(`Violation user role can't be ${role}.`);
-
-      // if (role === UserRoles.ADMIN) {
-      //   const admin = await User.findOne({
-      //     where: {
-      //       role: UserRoles.ADMIN
-      //     }
-      //   });
-      //
-      //   if (admin) throw new Error("You can't use admin privileges.");
-      // }
 
       if (isUserExists && !isUserExists.dataValues.isVerified)
         throw new Error(

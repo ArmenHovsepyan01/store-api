@@ -30,8 +30,20 @@ async function deleteColor(id: number) {
   }
 }
 
+async function getColorByName(color: string) {
+  try {
+    return await Colors.findAll({
+      where: {
+        color
+      }
+    });
+  } catch (e) {
+    throw new Error(e);
+  }
+}
 export default {
   getAllColors,
   deleteColor,
-  createColor
+  createColor,
+  getColorByName
 };

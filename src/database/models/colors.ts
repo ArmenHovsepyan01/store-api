@@ -1,6 +1,9 @@
 'use strict';
 
-import Sequelize, { Model, Optional } from 'sequelize';
+import { Model, Optional } from 'sequelize';
+import colorsService from '../../services/colors.service';
+import { Colors } from './models';
+import { validateLoginFields } from '../../validators/loginValidator';
 
 interface ColorsAttributes {
   id?: number;
@@ -55,7 +58,20 @@ export default (sequelize: any, DataTypes: any) => {
     },
     {
       sequelize,
-      modelName: 'Colors'
+      modelName: 'Colors',
+      hooks: {
+        async beforeCreate(attributes) {
+          const newColor = attributes.dataValues.color;
+
+          const color = await Colors.findOne({
+            where: {
+              color: newColor
+            }
+          });
+
+          if (color) throw new Error('Color already exists create another one.');
+        }
+      }
     }
   );
   return Colors;

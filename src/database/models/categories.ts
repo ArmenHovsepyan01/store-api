@@ -1,6 +1,8 @@
 'use strict';
 
-import Sequelize, { Model, Optional } from 'sequelize';
+import Sequelize, { CreateOptions, Model, Optional } from 'sequelize';
+import { HookReturn } from 'sequelize/lib/hooks';
+import { runInNewContext } from 'node:vm';
 
 interface CategoriesAttributes {
   id?: number;
@@ -57,7 +59,20 @@ export default (sequelize: any, DataTypes: any) => {
     },
     {
       sequelize,
-      modelName: 'Categories'
+      modelName: 'Categories',
+      hooks: {
+        async beforeCreate(attributes) {
+          const newCategory = attributes.dataValues.category;
+
+          const category = await Categories.findOne({
+            where: {
+              category: newCategory
+            }
+          });
+
+          if (category) throw new Error('Category already exists create another one.');
+        }
+      }
     }
   );
   return Categories;

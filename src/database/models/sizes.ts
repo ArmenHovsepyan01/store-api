@@ -1,6 +1,7 @@
 'use strict';
 
-import Sequelize, { Model, Optional } from 'sequelize';
+import Sequelize, { CreateOptions, Model, Optional } from 'sequelize';
+import { HookReturn } from 'sequelize/lib/hooks';
 
 interface SizesAttributes {
   id?: number;
@@ -45,7 +46,20 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Sizes'
+      modelName: 'Sizes',
+      hooks: {
+        async beforeCreate(attributes) {
+          const newSize = attributes.dataValues.size;
+
+          const size = await Sizes.findOne({
+            where: {
+              size: newSize
+            }
+          });
+
+          if (size) throw new Error('Size already exists create another one.');
+        }
+      }
     }
   );
   return Sizes;
