@@ -17,9 +17,14 @@ async function get(req: Request, res: Response) {
 
 async function create(req: Request, res: Response) {
   try {
-    const { category } = req.body;
+    const { category, parent_id } = req.body;
 
-    const data = await CategoriesService.createCategory(category);
+    if (!category)
+      return res.status(500).json({
+        message: `Category is empty please fill it.`
+      });
+
+    const data = await CategoriesService.createCategory(category, parent_id);
 
     res.status(200).json({
       message: `Category ${category} created successfully.`,

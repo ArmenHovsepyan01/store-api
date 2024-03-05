@@ -44,6 +44,12 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       });
+      this.hasMany(models.Addresses, {
+        as: 'addresses',
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
     }
   }
 

@@ -8,7 +8,6 @@ import productService from '../services/product.service';
 
 async function create(req: Request, res: Response) {
   try {
-    console.log(req.files, req.body);
     const mainImage = (req.files as UploadedFile[]).find((item) => item.fieldname === 'main_image');
 
     const fields = {
@@ -34,6 +33,16 @@ async function getById(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const product = await ProductServices.getProductById(id);
+
+    if (!product)
+      return res.status(400).json({
+        message: `There is no product with id: ${id}.`
+      });
+
+    if (!product.isPublished)
+      return res.status(400).json({
+        message: `There is no published product with id: ${id}.`
+      });
 
     res.status(200).json({
       product: product

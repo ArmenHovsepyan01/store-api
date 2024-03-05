@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 import jwt from 'jsonwebtoken';
-import { User } from '../database/models/models';
-import { Logger } from 'sequelize/lib/utils/logger';
 
 export async function checkUser(req: Request, res: Response, next: NextFunction) {
   try {

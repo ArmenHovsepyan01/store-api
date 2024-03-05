@@ -9,6 +9,7 @@ import productColorsModelFunction from './productcolors';
 import productImagesModelFunction from './productimages';
 import productSizesModelFunction from './productsizes';
 import favoritesModelFunction from './favorites';
+import addressesModelFunction from './addresses';
 
 export const Cart: ReturnType<typeof cartModelFunction> = db.Cart;
 export const User: ReturnType<typeof userModelFunction> = db.User;
@@ -20,3 +21,4 @@ export const Sizes: ReturnType<typeof sizesModelFunction> = db.Sizes;
 export const Colors: ReturnType<typeof colorsModelFunction> = db.Colors;
 export const Categories: ReturnType<typeof categoriesModelFunction> = db.Categories;
 export const Favorites: ReturnType<typeof favoritesModelFunction> = db.Favorites;
+export const Addresses: ReturnType<typeof addressesModelFunction> = db.Addresses;

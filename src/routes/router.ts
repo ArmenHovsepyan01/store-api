@@ -7,6 +7,7 @@ import sizesRouter from './sizes.router';
 import categoriesRouter from './categories.router';
 import cartRouter from './cart.router';
 import favoritesRoute from './favorites.route';
+import addressesRoute from './addresses.route';
 
 const router = Router();
 
@@ -20,5 +21,7 @@ router.use('/sizes', sizesRouter);
 router.use('/categories', categoriesRouter);
 
 router.use('/favorites', favoritesRoute);
+
+router.use('/addresses', addressesRoute);
 
 export default router;

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { User } from '../database/models/models';
+import { Addresses, User } from '../database/models/models';
 
 import sendRegistrationVerificationMail from './email.service';
 import { createUserParams } from '../definitions';
@@ -9,7 +9,12 @@ import { createUserParams } from '../definitions';
 class UserService {
   async getUser(id: number) {
     try {
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(id, {
+        include: {
+          model: Addresses,
+          as: 'addresses'
+        }
+      });
 
       if (!user) throw new Error(`There is no user by this mail.`);
 

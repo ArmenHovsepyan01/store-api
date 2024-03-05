@@ -1,12 +1,11 @@
 'use strict';
 
-import Sequelize, { CreateOptions, Model, Optional } from 'sequelize';
-import { HookReturn } from 'sequelize/lib/hooks';
-import { runInNewContext } from 'node:vm';
+import { Model, Optional } from 'sequelize';
 
 interface CategoriesAttributes {
   id?: number;
   category: string;
+  parent_id?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -22,6 +21,7 @@ export default (sequelize: any, DataTypes: any) => {
   {
     id!: number;
     category: string;
+    parent_id!: number;
 
     readonly updatedAt: Date;
     readonly createdAt: Date;
@@ -32,6 +32,11 @@ export default (sequelize: any, DataTypes: any) => {
         sourceKey: 'id',
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
+      });
+
+      this.hasMany(models.Categories, {
+        as: 'subcategories',
+        foreignKey: 'parent_id'
       });
     }
   }
@@ -48,6 +53,13 @@ export default (sequelize: any, DataTypes: any) => {
         type: DataTypes.STRING,
         allowNull: false
       },
+      parent_id: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Categories',
+          key: 'id'
+        }
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE
@@ -62,6 +74,7 @@ export default (sequelize: any, DataTypes: any) => {
       modelName: 'Categories',
       hooks: {
         async beforeCreate(attributes) {
+          console.log(attributes.dataValues.category);
           const newCategory = attributes.dataValues.category;
 
           const category = await Categories.findOne({
@@ -71,6 +84,9 @@ export default (sequelize: any, DataTypes: any) => {
           });
 
           if (category) throw new Error('Category already exists create another one.');
+        },
+        async afterDestroy(instance) {
+          console.log(instance.dataValues.category, 'was deleted');
         }
       }
     }
