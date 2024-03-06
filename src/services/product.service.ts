@@ -74,7 +74,7 @@ async function createProduct(body: createProductParams) {
       user_id
     } = body;
 
-    console.log(body);
+    console.log(color);
 
     const t = await db.sequelize.transaction();
 

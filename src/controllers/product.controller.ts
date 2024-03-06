@@ -10,6 +10,8 @@ async function create(req: Request, res: Response) {
   try {
     const mainImage = (req.files as UploadedFile[]).find((item) => item.fieldname === 'main_image');
 
+    console.log(req.body.user_id, "user id");
+
     const fields = {
       ...req.body,
       main_image: extractRelativePath(mainImage.path)
@@ -20,6 +22,7 @@ async function create(req: Request, res: Response) {
       .map((item) => extractRelativePath(item.path));
 
     const product = await ProductServices.createProduct(fields);
+
 
     res.status(200).json(product);
   } catch (e) {

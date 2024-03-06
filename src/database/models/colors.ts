@@ -1,9 +1,6 @@
 'use strict';
 
 import { Model, Optional } from 'sequelize';
-import colorsService from '../../services/colors.service';
-import { Colors } from './models';
-import { validateLoginFields } from '../../validators/loginValidator';
 
 interface ColorsAttributes {
   id?: number;
@@ -29,8 +26,7 @@ export default (sequelize: any, DataTypes: any) => {
         as: 'products',
         foreignKey: 'colors_id',
         otherKey: 'product_id',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
+        onDelete: 'CASCADE'
       });
     }
   }
