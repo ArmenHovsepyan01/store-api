@@ -9,6 +9,7 @@ interface AddressesAttributes {
   zip_code: string;
   street_address: string;
   user_id: number;
+  isDefault?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -27,6 +28,7 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     city: string;
     zip_code: string;
     street_address: string;
+    isDefault!: boolean;
     user_id: number;
 
     readonly createdAt!: Date;
@@ -74,6 +76,10 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
+      },
+      isDefault: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,

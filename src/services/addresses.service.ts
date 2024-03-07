@@ -25,6 +25,28 @@ async function createAddress(address: AddressesInput) {
 
 async function updateAddress(id: number, values: AddressesInput) {
   try {
+    const { isDefault } = values;
+
+    if (isDefault) {
+      const defaultAddress = await Addresses.findOne({
+        where: {
+          isDefault: true,
+          user_id: values.user_id
+        }
+      });
+
+      if (defaultAddress) {
+        await Addresses.update(
+          { isDefault: false },
+          {
+            where: {
+              id: defaultAddress.id
+            }
+          }
+        );
+      }
+    }
+
     return await Addresses.update(values, {
       where: {
         id

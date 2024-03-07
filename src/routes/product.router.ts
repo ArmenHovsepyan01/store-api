@@ -17,7 +17,7 @@ const router = Router();
 const upload = multer({
   storage: storage,
   fileFilter(req: Request, file: Express.Multer.File, callback: multer.FileFilterCallback) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|avif)$/)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|avif|webp)$/)) {
       return callback(new Error('Unsupported files'));
     }
 

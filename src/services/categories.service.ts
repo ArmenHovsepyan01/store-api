@@ -1,6 +1,23 @@
 import { Categories } from '../database/models/models';
 import { CategoriesOutput } from '../database/models/categories';
 
+const categoryIncludes = {
+  model: Categories,
+  as: 'subcategories',
+  include: [
+    {
+      model: Categories,
+      as: 'subcategories',
+      include: [
+        {
+          model: Categories,
+          as: 'subcategories'
+        }
+      ]
+    }
+  ]
+};
+
 async function getAllCategories(): Promise<CategoriesOutput[]> {
   try {
     return await Categories.findAll({
@@ -31,7 +48,9 @@ async function getAllCategories(): Promise<CategoriesOutput[]> {
 
 async function createCategory(category: string, parent_id?: number) {
   try {
-    return await Categories.create({ category, parent_id });
+    const newCategory = await Categories.create({ category, parent_id });
+
+    return await Categories.findByPk(newCategory.id, { include: categoryIncludes });
   } catch (e) {
     throw new Error(e);
   }
