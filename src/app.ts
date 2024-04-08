@@ -6,9 +6,9 @@ import cors from 'cors';
 
 import { connectToDB } from './database/config/database';
 
-import router from './routes/router';
-
 import DeleteUnverifiedUsers from './cron-job';
+
+import router from './routes/router';
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -24,9 +24,13 @@ const start = async () => {
 };
 
 app.use(cors());
+
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use('/api', express.static('public'));
+
 app.use(express.json());
+
 app.use('/api', router);
 
 start();

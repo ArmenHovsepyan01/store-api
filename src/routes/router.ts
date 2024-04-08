@@ -8,6 +8,7 @@ import categoriesRouter from './categories.router';
 import cartRouter from './cart.router';
 import favoritesRoute from './favorites.route';
 import addressesRoute from './addresses.route';
+import paymentRoute from './payment.route';
 
 const router = Router();
 
@@ -23,5 +24,7 @@ router.use('/categories', categoriesRouter);
 router.use('/favorites', favoritesRoute);
 
 router.use('/addresses', addressesRoute);
+
+router.use('/payment', paymentRoute);
 
 export default router;
