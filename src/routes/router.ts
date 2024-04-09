@@ -9,6 +9,7 @@ import cartRouter from './cart.router';
 import favoritesRoute from './favorites.route';
 import addressesRoute from './addresses.route';
 import paymentRoute from './payment.route';
+import { checkUser } from '../middleware/checkUser';
 
 const router = Router();
 
@@ -25,6 +26,6 @@ router.use('/favorites', favoritesRoute);
 
 router.use('/addresses', addressesRoute);
 
-router.use('/payment', paymentRoute);
+router.use('/payment', checkUser, paymentRoute);
 
 export default router;

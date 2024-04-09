@@ -159,7 +159,6 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
       }
     }
   );
-  console.log();
 
   return Product;
 };

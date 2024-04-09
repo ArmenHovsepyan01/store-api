@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 const express = require('express');
 const app = express();
 
@@ -16,8 +17,17 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (request, respon
     return;
   }
 
-  console.log(`Unhandled event type ${event.type}`);
-  console.log(event);
+  switch (event.type) {
+    case 'charge.succeeded':
+      console.log(event.type, '\n', event.data.object.paid);
+      // get from event.data.object paid, customer, status
+      break;
+    case 'charge.failed':
+      console.log(event.type, '\n', event);
+      break;
+    default:
+      console.log(event.type);
+  }
 
   response.send();
 });
