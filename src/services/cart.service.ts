@@ -79,8 +79,21 @@ async function deleteFromCart(id: number) {
   }
 }
 
+async function emptyCart(user_id: string) {
+  try {
+    await Cart.destroy({
+      where: {
+        user_id
+      }
+    });
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
 export default {
   getAll,
   addToCart,
-  deleteFromCart
+  deleteFromCart,
+  emptyCart
 };

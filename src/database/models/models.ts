@@ -10,8 +10,8 @@ import productImagesModelFunction from './productimages';
 import productSizesModelFunction from './productsizes';
 import favoritesModelFunction from './favorites';
 import addressesModelFunction from './addresses';
-import customerModelFunction from './customer';
 import orderModelFunction from './order';
+import orderProductsModelFunction from './orderproducts';
 
 export const Cart: ReturnType<typeof cartModelFunction> = db.Cart;
 export const User: ReturnType<typeof userModelFunction> = db.User;
@@ -24,5 +24,5 @@ export const Colors: ReturnType<typeof colorsModelFunction> = db.Colors;
 export const Categories: ReturnType<typeof categoriesModelFunction> = db.Categories;
 export const Favorites: ReturnType<typeof favoritesModelFunction> = db.Favorites;
 export const Addresses: ReturnType<typeof addressesModelFunction> = db.Addresses;
-export const Customer: ReturnType<typeof customerModelFunction> = db.Customer;
 export const Order: ReturnType<typeof orderModelFunction> = db.Order;
+export const OrderProducts: ReturnType<typeof orderProductsModelFunction> = db.OrderProducts;

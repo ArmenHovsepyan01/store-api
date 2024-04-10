@@ -10,7 +10,7 @@ async function create(req: Request, res: Response) {
   try {
     const mainImage = (req.files as UploadedFile[]).find((item) => item.fieldname === 'main_image');
 
-    console.log(req.body.user_id, "user id");
+    console.log(req.body.user_id, 'user id');
 
     const fields = {
       ...req.body,
@@ -22,7 +22,6 @@ async function create(req: Request, res: Response) {
       .map((item) => extractRelativePath(item.path));
 
     const product = await ProductServices.createProduct(fields);
-
 
     res.status(200).json(product);
   } catch (e) {
@@ -68,6 +67,7 @@ async function get(req: Request, res: Response) {
       product: products
     });
   } catch (e) {
+    console.log(e);
     res.status(400).json({
       error: e.message
     });

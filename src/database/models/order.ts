@@ -5,10 +5,9 @@ interface OrderAttributes {
   id: number;
   amount: number;
   currency?: string;
-  customerId: string;
   status: 'open' | 'succeed' | 'failed';
   paid: boolean;
-  url: string;
+  userId: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -21,19 +20,27 @@ export default (sequelize, DataTypes) => {
     id: number;
     amount: number;
     currency?: string;
-    customerId: string;
     status: 'open' | 'succeed' | 'failed';
     paid: boolean;
-    url: string;
+    userId: number;
 
     readonly createdAt;
     readonly updatedAt;
+
     static associate(models: any) {
-      this.belongsTo(models.Customer, {
+      this.belongsTo(models.User, {
         as: 'orders',
-        foreignKey: 'customerId',
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        foreignKey: 'userId',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
+      this.belongsToMany(models.Product, {
+        as: 'products',
+        foreignKey: 'orderId',
+        otherKey: 'productId',
+        through: models.OrderProducts,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       });
     }
   }
@@ -53,16 +60,6 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: 'usd'
       },
-      customerId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-          model: 'Customer',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
       status: {
         type: DataTypes.STRING,
         defaultValue: 'open'
@@ -71,9 +68,15 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
-      url: {
-        type: DataTypes.TEXT,
-        allowNull: false
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       }
     },
     {

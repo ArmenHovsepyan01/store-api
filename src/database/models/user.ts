@@ -34,6 +34,12 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
         foreignKey: 'user_id',
         onDelete: 'CASCADE'
       });
+      this.hasMany(models.Order, {
+        as: 'orders',
+        foreignKey: 'userId',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
       this.hasMany(models.Cart, {
         foreignKey: 'user_id',
         onDelete: 'CASCADE',

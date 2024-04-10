@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { Addresses, User } from '../database/models/models';
 
-import sendRegistrationVerificationMail from './email.service';
+import emailService from './email.service';
 import { createUserParams } from '../definitions';
 
 class UserService {
@@ -54,7 +54,7 @@ class UserService {
         role
       });
 
-      const info = await sendRegistrationVerificationMail(email, newUser.id);
+      const info = await emailService.sendRegistrationVerificationMail(email, newUser.id);
 
       return {
         user: newUser,

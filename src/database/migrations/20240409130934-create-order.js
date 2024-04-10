@@ -16,16 +16,6 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: 'usd'
       },
-      customerId: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        references: {
-          model: 'Customers',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
       status: {
         type: Sequelize.STRING,
         defaultValue: 'open'
@@ -34,9 +24,15 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
-      url: {
-        type: Sequelize.TEXT,
-        allowNull: false
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,
