@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { Addresses, User } from '../database/models/models';
+import { Addresses, Cart, Product, User } from '../database/models/models';
 
 import emailService from './email.service';
 import { createUserParams } from '../definitions';
@@ -111,6 +111,32 @@ class UserService {
         message: 'User logged in.',
         access_token: token
       };
+    } catch (e) {
+      throw new Error(e);
+    }
+  }
+
+  async getUserByIdWithCart(user_id: number) {
+    try {
+      return await User.findByPk(user_id, {
+        include: [
+          {
+            model: Addresses,
+            as: 'addresses',
+            where: {
+              isDefault: true
+            }
+          },
+          {
+            model: Cart,
+            include: [
+              {
+                model: Product
+              }
+            ]
+          }
+        ]
+      });
     } catch (e) {
       throw new Error(e);
     }

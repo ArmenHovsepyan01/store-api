@@ -10,6 +10,7 @@ import favoritesRoute from './favorites.route';
 import addressesRoute from './addresses.route';
 import paymentRoute from './payment.route';
 import { checkUser } from '../middleware/checkUser';
+import orderRoute from './order.route';
 
 const router = Router();
 
@@ -27,5 +28,7 @@ router.use('/favorites', favoritesRoute);
 router.use('/addresses', addressesRoute);
 
 router.use('/payment', checkUser, paymentRoute);
+
+router.use('/orders', checkUser, orderRoute);
 
 export default router;

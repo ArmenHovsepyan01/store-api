@@ -1,63 +1,64 @@
 import stripe from '../config/stripe';
-import { Addresses, Cart, Product, User } from '../database/models/models';
-import { AddressesOutput } from '../database/models/addresses';
 import orderService from './order.service';
+import userService from './user.service';
 
-async function pay(user_id: number) {
+async function pay(user_id: number, orderId?: number) {
   try {
-    const user = await User.findByPk(user_id, {
-      include: [
-        {
-          model: Addresses,
-          as: 'addresses',
-          where: {
-            isDefault: true
-          }
-        },
-        {
-          model: Cart,
-          include: [
-            {
-              model: Product
-            }
-          ]
-        }
-      ]
-    });
+    const user = await userService.getUserByIdWithCart(user_id);
 
-    // @ts-ignore
-    const userAddress = user.addresses[0] as AddressesOutput;
+    const userAddress = user?.addresses[0];
 
-    // @ts-ignore
-    const lineItems = user.Carts.map((item) => {
-      return {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: item.Product.name,
-            images: [`http://localhost:5000/api/images/${item.Product.main_img}`]
-          },
-          unit_amount: item.Product.price * 100
-        },
-        quantity: item.quantity
-      };
-    });
+    if (!userAddress) throw new Error('Please set your address then do order.');
+
+    let lineItems;
+    let order;
 
     const customer = await stripe.customers.list({ email: user.email });
 
-    // @ts-ignore
-    const orderProducts = user.Carts.map((product) => ({
-      productId: product.Product.id,
-      quantity: product.quantity
-    }));
+    if (!orderId) {
+      // @ts-ignore
+      const orderProducts = user.Carts.map((item) => ({
+        productId: item.Product.id,
+        quantity: item.quantity
+      }));
 
-    const total = lineItems.reduce((aggr, item) => {
-      return item.price_data.unit_amount + aggr;
-    }, 0);
+      // @ts-ignore
+      lineItems = user.Carts.map((item) => {
+        return {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: item.Product.name,
+              images: [`http://localhost:5000/api/images/${item.Product.main_img}`]
+            },
+            unit_amount: item.Product.price * 100
+          },
+          quantity: item.quantity
+        };
+      });
 
-    console.log(total);
+      const total = lineItems.reduce((aggr, item) => {
+        return item.price_data.unit_amount * item.quantity + aggr;
+      }, 0);
 
-    const order = await orderService.addOrder(total, user.id, orderProducts);
+      order = await orderService.addOrder(total, user.id, orderProducts);
+    } else {
+      order = await orderService.getOrderById(orderId);
+
+      lineItems = order.products.map((item) => {
+        return {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: item.dataValues.name,
+              images: [`http://localhost:5000/api/images/${item.dataValues.main_img}`]
+            },
+            unit_amount: item.dataValues.price * 100
+          },
+          quantity: item.dataValues.OrderProducts.quantity
+        };
+      });
+    }
 
     let customerId;
 
@@ -80,7 +81,6 @@ async function pay(user_id: number) {
 
       customerId = newCostumer.id;
     } else {
-      // change orderId
       await stripe.customers.update(customer.data[0].id, {
         metadata: {
           orderId: order.id
@@ -90,7 +90,7 @@ async function pay(user_id: number) {
       customerId = customer.data[0].id;
     }
 
-    const session = await stripe.checkout.sessions.create({
+    return await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
@@ -98,8 +98,6 @@ async function pay(user_id: number) {
       cancel_url: 'http://localhost:3000/payment/cancel',
       customer: customerId
     });
-
-    return session;
   } catch (e) {
     throw new Error(e);
   }

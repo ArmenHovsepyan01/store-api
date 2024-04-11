@@ -1,4 +1,6 @@
-import Sequelize, { Model, Optional } from 'sequelize';
+import Sequelize, { Model, NonAttribute, Optional } from 'sequelize';
+import { AddressesOutput } from './addresses';
+import { CartOutput } from './cart';
 
 interface UserAttributes {
   id?: number;
@@ -8,6 +10,8 @@ interface UserAttributes {
   password: string;
   isVerified: boolean;
   role: string;
+  addresses?: AddressesOutput[];
+  Carts?: CartOutput[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -24,6 +28,8 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     password: string;
     isVerified: boolean;
     role: string;
+
+    declare addresses?: NonAttribute<AddressesOutput[]>;
 
     readonly createdAt!: Date;
     readonly updatedAt!: Date;

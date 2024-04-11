@@ -1,18 +1,20 @@
+import express from 'express';
+
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-import express from 'express';
 import emailService from './services/email.service';
 import orderService from './services/order.service';
 import cartService from './services/cart.service';
 
 const app = express();
 
-const endpointSecret = 'whsec_f955180bfc44cdf9cd9a9a8449bc322e898254cbe16085e7be4e4bfdc7c73ead';
+const endpointSecret = process.env.ENDPOINT_SECRET;
 
 app.post('/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
   const sig = request.headers['stripe-signature'];
@@ -36,10 +38,11 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
       // @ts-ignore
       const orderId = customer.metadata.orderId;
 
-      console.log('succeed');
-      await orderService.updateOrderStatus('succeed', orderId);
+      const emptyCart = await orderService.updateOrderStatus('succeed', orderId);
 
-      await cartService.emptyCart(userId);
+      if (emptyCart) {
+        await cartService.emptyCart(userId);
+      }
 
       await emailService.sendReceiptOrderMail(session.billing_details.email, session.receipt_url);
 

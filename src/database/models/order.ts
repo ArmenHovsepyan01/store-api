@@ -1,7 +1,7 @@
 'use strict';
 import { Model, Optional } from 'sequelize';
 
-interface OrderAttributes {
+export interface OrderAttributes {
   id: number;
   amount: number;
   currency?: string;
