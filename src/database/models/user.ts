@@ -12,6 +12,7 @@ interface UserAttributes {
   role: string;
   addresses?: AddressesOutput[];
   Carts?: CartOutput[];
+  customerId: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -28,6 +29,7 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     password: string;
     isVerified: boolean;
     role: string;
+    customerId: string;
 
     declare addresses?: NonAttribute<AddressesOutput[]>;
 
@@ -93,6 +95,10 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
       isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+      },
+      customerId: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       role: {
         type: DataTypes.STRING,

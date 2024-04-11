@@ -14,6 +14,7 @@ import { IProduct } from '../definitions';
 import { createValuesFromReqBody } from '../helpers/createValuesFromReqBody';
 import { createWhereClause } from '../helpers/createWhereClause';
 import db from '../database/models';
+import stripeService from './stripe.service';
 
 interface createProductParams {
   name: string;
@@ -74,7 +75,16 @@ async function createProduct(body: createProductParams) {
       user_id
     } = body;
 
-    console.log(color);
+    const stripeProductId = await stripeService.createProduct({
+      name,
+      description,
+      metadata: {
+        price: +price,
+        brand,
+        main_img: main_image
+      },
+      active: isPublished
+    });
 
     const t = await db.sequelize.transaction();
 
@@ -87,14 +97,14 @@ async function createProduct(body: createProductParams) {
         isPublished: isPublished,
         main_img: main_image,
         category_id: +categoryId,
-        user_id: +user_id
+        user_id: +user_id,
+        stripeId: stripeProductId
       },
       {
         transaction: t
       }
     );
 
-    // do this with hooks, afterCreate
     await ProductSizes.create(
       {
         product_id: product.id,

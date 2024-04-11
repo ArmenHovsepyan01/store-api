@@ -28,6 +28,8 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
     return;
   }
 
+  console.log(event.type);
+
   switch (event.type) {
     case 'charge.succeeded': {
       const session = event.data.object;

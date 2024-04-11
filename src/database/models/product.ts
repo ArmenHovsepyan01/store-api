@@ -1,5 +1,5 @@
 'use strict';
-import Sequelize, { InstanceDestroyOptions, Model, Optional } from 'sequelize';
+import Sequelize, { CreateOptions, InstanceDestroyOptions, Model, Optional } from 'sequelize';
 
 import fs from 'fs';
 import path from 'path';
@@ -14,6 +14,7 @@ interface ProductAttributes {
   main_img: string;
   user_id: number;
   category_id: number;
+  stripeId: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -36,6 +37,7 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     main_img: string;
     user_id: number;
     category_id: number;
+    stripeId: string;
 
     readonly createdAt!: Date;
     readonly updatedAt!: Date;
@@ -133,6 +135,10 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       },
+      stripeId: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       main_img: {
         type: DataTypes.STRING,
         allowNull: false
@@ -163,6 +169,10 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
 
           const mainImagePath = path.join(path.resolve(), 'public', instance.main_img);
           if (fs.existsSync(mainImagePath)) await fs.promises.unlink(mainImagePath);
+        },
+
+        async afterCreate(attributes: Product, options: CreateOptions<ProductAttributes>) {
+          console.log(attributes.dataValues, 'after creation', options);
         }
       }
     }

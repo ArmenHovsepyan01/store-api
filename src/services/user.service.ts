@@ -5,6 +5,7 @@ import { Addresses, Cart, Product, User } from '../database/models/models';
 
 import emailService from './email.service';
 import { createUserParams } from '../definitions';
+import stripeService from './stripe.service';
 
 class UserService {
   async getUser(id: number) {
@@ -46,12 +47,15 @@ class UserService {
 
       const hashedPassword = await bcrypt.hash(password, 7);
 
+      const customerId = await stripeService.createCustomer(body);
+
       const newUser = await User.create({
         firstName,
         lastName,
         email,
         password: hashedPassword,
-        role
+        role,
+        customerId
       });
 
       const info = await emailService.sendRegistrationVerificationMail(email, newUser.id);
