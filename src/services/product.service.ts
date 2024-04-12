@@ -5,8 +5,7 @@ import {
   Sizes,
   ProductSizes,
   ProductColors,
-  ProductImages,
-  Favorites
+  ProductImages
 } from '../database/models/models';
 
 import { IProduct } from '../definitions';
@@ -184,6 +183,9 @@ async function deleteProductById(id: string) {
 async function updateProductById(id: string, fields: IProduct) {
   try {
     const values = createValuesFromReqBody(fields);
+
+    const product = await Product.findByPk(id);
+    await stripeService.updateProduct(product.stripeId, values);
 
     return await Product.update(values, {
       where: {

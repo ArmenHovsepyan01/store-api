@@ -1,4 +1,4 @@
-import { IProduct } from '../definitions';
+import { IProduct, ProductUpdateFields } from '../definitions';
 import { AddressesInput } from '../database/models/addresses';
 
 export const createValuesFromReqBody = (fields: IProduct | AddressesInput) => {
@@ -7,5 +7,5 @@ export const createValuesFromReqBody = (fields: IProduct | AddressesInput) => {
     values[fieldsKey] = fields[fieldsKey];
   }
 
-  return values;
+  return values as ProductUpdateFields;
 };

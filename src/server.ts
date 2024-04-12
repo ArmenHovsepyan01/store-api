@@ -28,7 +28,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
     return;
   }
 
-  console.log(event.type);
+  console.log(event.type, event);
 
   switch (event.type) {
     case 'charge.succeeded': {

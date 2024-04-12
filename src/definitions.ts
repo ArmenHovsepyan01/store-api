@@ -44,3 +44,11 @@ export interface UploadedFile {
   path: string;
   size: number;
 }
+
+export interface ProductUpdateFields {
+  name: string;
+  description: string;
+  price: number;
+  user_id: number;
+  isPublished?: boolean;
+}
