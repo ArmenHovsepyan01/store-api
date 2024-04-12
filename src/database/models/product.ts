@@ -1,8 +1,16 @@
 'use strict';
-import Sequelize, { CreateOptions, InstanceDestroyOptions, Model, Optional } from 'sequelize';
+import Sequelize, {
+  CreateOptions,
+  InstanceDestroyOptions,
+  InstanceUpdateOptions,
+  Model,
+  Optional
+} from 'sequelize';
 
 import fs from 'fs';
 import path from 'path';
+import stripeService from '../../services/stripe.service';
+import { HookReturn } from 'sequelize/lib/hooks';
 
 interface ProductAttributes {
   id?: number;
@@ -159,6 +167,8 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
       modelName: 'Product',
       hooks: {
         async beforeDestroy(instance: Product, options: InstanceDestroyOptions): Promise<void> {
+          await stripeService.deleteProduct(instance.stripeId);
+
           //@ts-ignore
           const images = await instance.getImages();
 
@@ -169,10 +179,6 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
 
           const mainImagePath = path.join(path.resolve(), 'public', instance.main_img);
           if (fs.existsSync(mainImagePath)) await fs.promises.unlink(mainImagePath);
-        },
-
-        async afterCreate(attributes: Product, options: CreateOptions<ProductAttributes>) {
-          console.log(attributes.dataValues, 'after creation', options);
         }
       }
     }
