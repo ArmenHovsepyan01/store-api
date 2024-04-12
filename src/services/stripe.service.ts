@@ -15,6 +15,7 @@ type StripeProductAttributes = Omit<
   | 'main_img'
   | 'isPublished'
   | 'user_id'
+  | 'priceId'
 > & {
   metadata: {
     price: number;
@@ -49,7 +50,7 @@ async function createProduct(product: StripeProductAttributes) {
 
     console.log(stripeProductPrice);
 
-    return stripeProduct.id;
+    return { stripeProductId: stripeProduct.id, priceId: stripeProductPrice.id };
   } catch (e) {
     console.error(e);
     throw new Error(e);
@@ -73,11 +74,12 @@ async function updateProduct(id: string, body: ProductUpdateFields) {
     const { user_id, price, isPublished, ...rest } = Object.assign({}, body);
 
     if (Object.values(rest).length !== 0) {
+      let priceId;
       const updatedProduct = await stripe.products.update(id, { ...rest });
 
       if (price) {
         const activePrice = await stripe.prices.list({ product: updatedProduct.id, active: true });
-        await Promise.all([
+        const [lastPrice, newPrice] = await Promise.all([
           stripe.prices.update(activePrice.data[0].id, { active: false }),
           stripe.prices.create({
             product: updatedProduct.id,
@@ -85,9 +87,11 @@ async function updateProduct(id: string, body: ProductUpdateFields) {
             currency: 'usd'
           })
         ]);
+
+        priceId = newPrice.id;
       }
 
-      return updatedProduct;
+      return priceId;
     }
   } catch (e) {
     throw new Error(e);

@@ -1,16 +1,9 @@
 'use strict';
-import Sequelize, {
-  CreateOptions,
-  InstanceDestroyOptions,
-  InstanceUpdateOptions,
-  Model,
-  Optional
-} from 'sequelize';
+import Sequelize, { InstanceDestroyOptions, Model, Optional } from 'sequelize';
 
 import fs from 'fs';
 import path from 'path';
 import stripeService from '../../services/stripe.service';
-import { HookReturn } from 'sequelize/lib/hooks';
 
 interface ProductAttributes {
   id?: number;
@@ -23,6 +16,7 @@ interface ProductAttributes {
   user_id: number;
   category_id: number;
   stripeId: string;
+  priceId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -46,6 +40,7 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
     user_id: number;
     category_id: number;
     stripeId: string;
+    priceId?: string;
 
     readonly createdAt!: Date;
     readonly updatedAt!: Date;
@@ -128,6 +123,9 @@ export default (sequelize: any, DataTypes: typeof Sequelize.DataTypes) => {
       price: {
         type: DataTypes.NUMBER,
         allowNull: false
+      },
+      priceId: {
+        type: DataTypes.STRING
       },
       isPublished: {
         type: DataTypes.BOOLEAN,

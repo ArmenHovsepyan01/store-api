@@ -12,6 +12,7 @@ import { IProduct } from '../definitions';
 
 import { createValuesFromReqBody } from '../helpers/createValuesFromReqBody';
 import { createWhereClause } from '../helpers/createWhereClause';
+
 import db from '../database/models';
 import stripeService from './stripe.service';
 
@@ -74,7 +75,7 @@ async function createProduct(body: createProductParams) {
       user_id
     } = body;
 
-    const stripeProductId = await stripeService.createProduct({
+    const { stripeProductId, priceId } = await stripeService.createProduct({
       name,
       description,
       metadata: {
@@ -97,7 +98,8 @@ async function createProduct(body: createProductParams) {
         main_img: main_image,
         category_id: +categoryId,
         user_id: +user_id,
-        stripeId: stripeProductId
+        stripeId: stripeProductId,
+        priceId
       },
       {
         transaction: t
@@ -185,13 +187,19 @@ async function updateProductById(id: string, fields: IProduct) {
     const values = createValuesFromReqBody(fields);
 
     const product = await Product.findByPk(id);
-    await stripeService.updateProduct(product.stripeId, values);
+    const priceId = await stripeService.updateProduct(product.stripeId, values);
 
-    return await Product.update(values, {
-      where: {
-        id: id
+    return await Product.update(
+      {
+        ...values,
+        ...(priceId ? { priceId } : {})
+      },
+      {
+        where: {
+          id: id
+        }
       }
-    });
+    );
   } catch (e) {
     throw new Error(e);
   }
