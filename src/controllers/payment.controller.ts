@@ -5,11 +5,7 @@ async function pay(req: Request, res: Response) {
   try {
     const { user_id, orderId } = req.body;
 
-    console.log(user_id);
-
     const session = await paymentService.pay(user_id, orderId);
-
-    console.log(session.id);
 
     res.json({
       message: 'Successful request.',

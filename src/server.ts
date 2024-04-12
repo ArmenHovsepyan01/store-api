@@ -10,7 +10,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 import emailService from './services/email.service';
 import orderService from './services/order.service';
-import cartService from './services/cart.service';
 
 const app = express();
 
@@ -28,37 +27,44 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
     return;
   }
 
-  console.log(event.type, event);
-
   switch (event.type) {
     case 'charge.succeeded': {
       const session = event.data.object;
-      const customer = await stripe.customers.retrieve(session.customer);
 
-      // @ts-ignore
-      const userId = customer.metadata.userId;
-      // @ts-ignore
-      const orderId = customer.metadata.orderId;
+      const { products, userId, amount, orderId } = session.metadata;
 
-      const emptyCart = await orderService.updateOrderStatus('succeed', orderId);
-
-      if (emptyCart) {
-        await cartService.emptyCart(userId);
-      }
+      const existingOrder = await orderService.checkUserOrders(session.payment_intent, userId);
 
       await emailService.sendReceiptOrderMail(session.billing_details.email, session.receipt_url);
+
+      if (orderId) await orderService.updateOrderStatus('succeed', orderId);
+
+      if (existingOrder) {
+        await orderService.updateOrderStatus('succeed', existingOrder.id);
+      } else {
+        if (!orderId)
+          await orderService.addOrder(
+            +amount,
+            +userId,
+            JSON.parse(products),
+            session.payment_intent
+          );
+      }
 
       break;
     }
 
     case 'charge.failed': {
       const session = event.data.object;
-      const customer = await stripe.customers.retrieve(session.customer);
 
-      // @ts-ignore
-      const orderId = customer.metadata.orderId;
+      const { products, userId, amount } = session.metadata;
 
-      await orderService.updateOrderStatus('failed', orderId);
+      const existingOrder = await orderService.checkUserOrders(session.payment_intent, userId);
+
+      if (!existingOrder) {
+        await orderService.addOrder(+amount, +userId, JSON.parse(products), session.payment_intent);
+      }
+
       await emailService.sendFailedPaymentMail(
         session.failure_message,
         session.billing_details.email

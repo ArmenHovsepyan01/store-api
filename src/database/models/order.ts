@@ -5,9 +5,10 @@ export interface OrderAttributes {
   id: number;
   amount: number;
   currency?: string;
-  status: 'open' | 'succeed' | 'failed';
+  status: 'succeed' | 'failed';
   paid: boolean;
   userId: number;
+  payment_intent: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -20,9 +21,10 @@ export default (sequelize, DataTypes) => {
     id: number;
     amount: number;
     currency?: string;
-    status: 'open' | 'succeed' | 'failed';
+    status: 'succeed' | 'failed';
     paid: boolean;
     userId: number;
+    payment_intent: string;
 
     readonly createdAt;
     readonly updatedAt;
@@ -62,11 +64,15 @@ export default (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.STRING,
-        defaultValue: 'open'
+        defaultValue: 'failed'
       },
       paid: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+      },
+      payment_intent: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       userId: {
         type: DataTypes.INTEGER,
